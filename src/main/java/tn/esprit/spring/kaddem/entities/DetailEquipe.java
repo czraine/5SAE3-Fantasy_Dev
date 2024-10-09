@@ -2,7 +2,7 @@ package tn.esprit.spring.kaddem.entities;
 
 import java.io.Serializable;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 public class DetailEquipe implements Serializable{
