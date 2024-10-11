@@ -22,4 +22,5 @@ public interface IUniversiteService {
     public Set<Departement> retrieveDepartementsByUniversite(Integer idUniversite);
 
 
+    int countDepartementsInUniversite(Integer universiteId);
 }
