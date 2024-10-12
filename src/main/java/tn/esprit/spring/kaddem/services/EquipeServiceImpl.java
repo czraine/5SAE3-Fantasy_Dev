@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class EquipeServiceImpl implements IEquipeService{
 	EquipeRepository equipeRepository;
 
-	///test merge
+	///merge test
 	public List<Equipe> retrieveAllEquipes(){
 		return  (List<Equipe>) equipeRepository.findAll();
 	}
