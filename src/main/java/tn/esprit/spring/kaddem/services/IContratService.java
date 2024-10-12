@@ -11,11 +11,11 @@ public interface IContratService {
 
     public  Contrat addContrat (Contrat ce);
 
-    public Contrat retrieveContrat (Integer  idContrat);
+    public Contrat retrieveContrat (long  idContrat);
 
     public  void removeContrat(Integer idContrat);
 
-    public Contrat affectContratToEtudiant (Integer idContrat, String nomE, String prenomE);
+    public Contrat affectContratToEtudiant (long idContrat, String nomE, String prenomE);
 
         public 	Integer nbContratsValides(Date startDate, Date endDate);
 
