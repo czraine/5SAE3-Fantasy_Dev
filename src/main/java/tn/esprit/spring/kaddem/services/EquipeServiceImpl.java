@@ -13,6 +13,7 @@ import tn.esprit.spring.kaddem.repositories.EquipeRepository;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @AllArgsConstructor
@@ -22,7 +23,7 @@ public class EquipeServiceImpl implements IEquipeService{
 
 
 	public List<Equipe> retrieveAllEquipes(){
-	return  (List<Equipe>) equipeRepository.findAll();
+		return  (List<Equipe>) equipeRepository.findAll();
 	}
 	public Equipe addEquipe(Equipe e){
 		return (equipeRepository.save(e));
@@ -38,7 +39,7 @@ public class EquipeServiceImpl implements IEquipeService{
 	}
 
 	public Equipe updateEquipe(Equipe e){
-	return (	equipeRepository.save(e));
+		return (	equipeRepository.save(e));
 	}
 
 	public void evoluerEquipes(){
@@ -62,21 +63,39 @@ public class EquipeServiceImpl implements IEquipeService{
 						if (nbEtudiantsAvecContratsActifs >= 3) break;
 					}
 				}
-					if (nbEtudiantsAvecContratsActifs >= 3){
-						if (equipe.getNiveau().equals(Niveau.JUNIOR)){
-							equipe.setNiveau(Niveau.SENIOR);
-							equipeRepository.save(equipe);
-							break;
-						}
-						if (equipe.getNiveau().equals(Niveau.SENIOR)){
-							equipe.setNiveau(Niveau.EXPERT);
-							equipeRepository.save(equipe);
-							break;
-						}
+				if (nbEtudiantsAvecContratsActifs >= 3){
+					if (equipe.getNiveau().equals(Niveau.JUNIOR)){
+						equipe.setNiveau(Niveau.SENIOR);
+						equipeRepository.save(equipe);
+						break;
+					}
+					if (equipe.getNiveau().equals(Niveau.SENIOR)){
+						equipe.setNiveau(Niveau.EXPERT);
+						equipeRepository.save(equipe);
+						break;
+					}
 				}
 			}
 
 		}
 
 	}
+	public int getActiveContratsCount(Integer equipeId) {
+		Equipe equipe = retrieveEquipe(equipeId);
+		return (int) equipe.getEtudiants().stream()
+				.flatMap(etudiant -> etudiant.getContrats().stream())
+				.filter(contrat -> !contrat.getArchive())
+				.count();
+	}
+
+	public List<Equipe> retrieveEquipesWithMinEtudiants(int minEtudiants) {
+		List<Equipe> allEquipes = (List<Equipe>) equipeRepository.findAll();
+		return allEquipes.stream()
+				.filter(equipe -> equipe.getEtudiants() != null && equipe.getEtudiants().size() >= minEtudiants)
+				.collect(Collectors.toList());
+	}
+
+
+
+
 }
