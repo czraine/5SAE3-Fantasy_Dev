@@ -12,3 +12,4 @@ EXPOSE 8096
 
 # Command to run the Spring Boot app
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+
