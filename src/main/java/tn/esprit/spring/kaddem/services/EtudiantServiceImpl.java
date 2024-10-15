@@ -111,7 +111,7 @@ public class EtudiantServiceImpl implements IEtudiantService {
 	@Override
 	public List<Etudiant> findEtudiantsByNomOrPrenom(String nomOrPrenom) {
 		log.info("Searching students by name or first name: {}", nomOrPrenom);
-		return etudiantRepository.findByNomContainingOrPrenomContaining(nomOrPrenom, nomOrPrenom);
+		return etudiantRepository.findByNomEContainingOrPrenomEContaining(nomOrPrenom, nomOrPrenom);
 	}
 
 	// Nouvelle fonctionnalité: Obtenir les étudiants avec contrat actif

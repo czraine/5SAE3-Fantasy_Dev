@@ -140,12 +140,12 @@ class EtudiantServiceImplTest {
     @Test
     void testFindEtudiantsByNomOrPrenom() {
         List<Etudiant> etudiants = Arrays.asList(new Etudiant(), new Etudiant());
-        when(etudiantRepository.findByNomEContainingOrPrenomEContaining("John", "John")).thenReturn(etudiants);
+        when(etudiantRepository.findByNomContainingOrPrenomContaining("John", "John")).thenReturn(etudiants);
 
         List<Etudiant> result = etudiantService.findEtudiantsByNomOrPrenom("John");
 
         assertEquals(2, result.size());
-        verify(etudiantRepository, times(1)).findByNomEContainingOrPrenomEContaining("John", "John");
+        verify(etudiantRepository, times(1)).findByNomContainingOrPrenomContaining("John", "John");
     }
 
     @Test
@@ -163,10 +163,7 @@ class EtudiantServiceImplTest {
     void testIsEtudiantInEquipe() {
         Etudiant etudiant = new Etudiant();
         Equipe equipe = new Equipe();
-
-        // Instead of calling getEtudiants() directly, use addEtudiant if implemented
-        equipe.addEtudiant(etudiant); // Use the method to add an Etudiant
-
+        equipe.getEtudiants().add(etudiant);
         when(etudiantRepository.findById(1)).thenReturn(Optional.of(etudiant));
         when(equipeRepository.findById(1)).thenReturn(Optional.of(equipe));
 
@@ -176,5 +173,4 @@ class EtudiantServiceImplTest {
         verify(etudiantRepository, times(1)).findById(1);
         verify(equipeRepository, times(1)).findById(1);
     }
-
 }
