@@ -91,7 +91,8 @@ ContratRepository contratRepository;
 				long difference_In_Days = (difference_In_Time / (1000 * 60 * 60 * 24)) % 365;
 				if (difference_In_Days==15){
 					contrats15j.add(contrat);
-					log.info(" Contrat : " + contrat);
+					System.out.println(" Contrat : " + contrat);
+
 				}
 				if (!contrat.getArchive() && dateSysteme.after(contrat.getDateFinContrat())) {
 					contratsAarchiver.add(contrat);

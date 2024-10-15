@@ -16,56 +16,117 @@ import tn.esprit.spring.kaddem.repositories.EtudiantRepository;
 
 import jakarta.transaction.Transactional;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @Slf4j
-public class EtudiantServiceImpl implements IEtudiantService{
+public class EtudiantServiceImpl implements IEtudiantService {
 	@Autowired
-	EtudiantRepository etudiantRepository ;
+	EtudiantRepository etudiantRepository;
 	@Autowired
 	ContratRepository contratRepository;
 	@Autowired
 	EquipeRepository equipeRepository;
-    @Autowired
-    DepartementRepository departementRepository;
-	public List<Etudiant> retrieveAllEtudiants(){
-	return (List<Etudiant>) etudiantRepository.findAll();
+	@Autowired
+	DepartementRepository departementRepository;
+
+	// Récupérer tous les étudiants
+	@Override
+	public List<Etudiant> retrieveAllEtudiants() {
+		log.info("Retrieving all students.");
+		return (List<Etudiant>) etudiantRepository.findAll();
 	}
 
-	public Etudiant addEtudiant (Etudiant e){
+
+	// Ajouter un étudiant
+	@Override
+	public Etudiant addEtudiant(Etudiant e) {
+		log.info("Adding a new student: {}", e);
+		return etudiantRepository.save(e);
+	}
+@Override
+	// Mettre à jour un étudiant
+	public Etudiant updateEtudiant(Etudiant e) {
+		log.info("Updating student: {}", e);
 		return etudiantRepository.save(e);
 	}
 
-	public Etudiant updateEtudiant (Etudiant e){
-		return etudiantRepository.save(e);
+	// Récupérer un étudiant par ID
+	@Override
+	public Etudiant retrieveEtudiant(Integer idEtudiant) {
+		log.info("Retrieving student with ID: {}", idEtudiant);
+		return etudiantRepository.findById(idEtudiant).orElse(null);
 	}
 
-	public Etudiant retrieveEtudiant(Integer  idEtudiant){
-		return etudiantRepository.findById(idEtudiant).get();
+	// Supprimer un étudiant
+	@Override
+	public void removeEtudiant(Integer idEtudiant) {
+		log.info("Removing student with ID: {}", idEtudiant);
+		Etudiant e = retrieveEtudiant(idEtudiant);
+		if (e != null) {
+			etudiantRepository.delete(e);
+			log.info("Student removed.");
+		} else {
+			log.warn("Student with ID {} not found.", idEtudiant);
+		}
 	}
 
-	public void removeEtudiant(Integer idEtudiant){
-	Etudiant e=retrieveEtudiant(idEtudiant);
-	etudiantRepository.delete(e);
+	// Assigner un étudiant à un département
+	@Override
+	public void assignEtudiantToDepartement(Integer etudiantId, Integer departementId) {
+		Etudiant etudiant = etudiantRepository.findById(etudiantId).orElse(null);
+		Departement departement = departementRepository.findById(departementId).orElse(null);
+		if (etudiant != null && departement != null) {
+			etudiant.setDepartement(departement);
+			etudiantRepository.save(etudiant);
+			log.info("Assigned student {} to department {}.", etudiantId, departementId);
+		} else {
+			log.warn("Failed to assign student to department.");
+		}
 	}
 
-	public void assignEtudiantToDepartement (Integer etudiantId, Integer departementId){
-        Etudiant etudiant = etudiantRepository.findById(etudiantId).orElse(null);
-        Departement departement = departementRepository.findById(departementId).orElse(null);
-        etudiant.setDepartement(departement);
-        etudiantRepository.save(etudiant);
-	}
+	// Ajouter et assigner un étudiant à une équipe et un contrat
+	@Override
 	@Transactional
-	public Etudiant addAndAssignEtudiantToEquipeAndContract(Etudiant e, long idContrat, Integer idEquipe){
-		Contrat c=contratRepository.findById(idContrat).orElse(null);
-		Equipe eq=equipeRepository.findById(idEquipe).orElse(null);
-		c.setEtudiant(e);
-		eq.getEtudiants().add(e);
-return e;
+	public Etudiant addAndAssignEtudiantToEquipeAndContract(Etudiant e, long idContrat, Integer idEquipe) {
+		Contrat c = contratRepository.findById(idContrat).orElse(null);
+		Equipe eq = equipeRepository.findById(idEquipe).orElse(null);
+		if (c != null && eq != null) {
+			c.setEtudiant(e);
+			eq.getEtudiants().add(e);
+			log.info("Assigned student {} to contract {} and team {}.", e.getIdEtudiant(), idContrat, idEquipe);
+		} else {
+			log.warn("Contract or team not found for assignment.");
+		}
+		return e;
 	}
 
-	public 	List<Etudiant> getEtudiantsByDepartement (Integer idDepartement){
-return  etudiantRepository.findEtudiantsByDepartement_IdDepart((idDepartement));
+	// Obtenir les étudiants d’un département
+	@Override
+	public List<Etudiant> getEtudiantsByDepartement(Integer idDepartement) {
+		log.info("Retrieving students for department {}", idDepartement);
+		return etudiantRepository.findEtudiantsByDepartement_IdDepart(idDepartement);
+	}
+
+	// Nouvelle fonctionnalité: Recherche d’étudiants par nom ou prénom
+	@Override
+	public List<Etudiant> findEtudiantsByNomOrPrenom(String nomOrPrenom) {
+		log.info("Searching students by name or first name: {}", nomOrPrenom);
+		return etudiantRepository.findByNomContainingOrPrenomContaining(nomOrPrenom, nomOrPrenom);
+	}
+
+	// Nouvelle fonctionnalité: Obtenir les étudiants avec contrat actif
+	@Override
+	public List<Etudiant> getEtudiantsWithActiveContrats() {
+		log.info("Retrieving students with active contracts.");
+		return etudiantRepository.findEtudiantsWithActiveContracts();
+	}
+
+	// Nouvelle fonctionnalité: Vérifier si un étudiant est dans une équipe
+	@Override
+	public boolean isEtudiantInEquipe(Integer etudiantId, Integer equipeId) {
+		log.info("Checking if student {} is in team {}", etudiantId, equipeId);
+		Etudiant etudiant = etudiantRepository.findById(etudiantId).orElse(null);
+		Equipe equipe = equipeRepository.findById(equipeId).orElse(null);
+		return etudiant != null && equipe != null && equipe.getEtudiants().contains(etudiant);
 	}
 }

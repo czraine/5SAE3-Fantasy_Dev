@@ -20,4 +20,13 @@ public interface IEtudiantService {
     public Etudiant addAndAssignEtudiantToEquipeAndContract(Etudiant e, long idContrat, Integer idEquipe);
 
     public 	List<Etudiant> getEtudiantsByDepartement (Integer idDepartement);
+
+    // Nouvelle fonctionnalité: Recherche d’étudiants par nom ou prénom
+    List<Etudiant> findEtudiantsByNomOrPrenom(String nomOrPrenom);
+
+    // Nouvelle fonctionnalité: Obtenir les étudiants avec contrat actif
+    List<Etudiant> getEtudiantsWithActiveContrats();
+
+    // Nouvelle fonctionnalité: Vérifier si un étudiant est dans une équipe
+    boolean isEtudiantInEquipe(Integer etudiantId, Integer equipeId);
 }
