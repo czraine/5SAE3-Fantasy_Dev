@@ -1,14 +1,14 @@
-# Use a Java base image
+# Utiliser une image de base Java
 FROM openjdk:17-jdk-alpine
 
-# Set the working directory
+# Définir le répertoire de travail
 WORKDIR /app
 
-# Copy the JAR from Jenkins to the Docker image
-COPY target/*.jar app.jar
+# Copier le JAR du répertoire target vers l'image Docker
+COPY target/kaddem-0.0.1-SNAPSHOT.jar app.jar
 
-# Expose the application’s port
+# Exposer le port de l'application
 EXPOSE 8096
 
-# Command to run the Spring Boot app
+# Commande pour exécuter l'application Spring Boot
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
