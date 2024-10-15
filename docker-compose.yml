@@ -1,37 +1,31 @@
-version: '3.8'
-
+version: "3.8"
 services:
   mysql:
     image: mysql:8.0
-    container_name: mysql-container
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: kaddem
-      MYSQL_USER: springuser
-      MYSQL_PASSWORD: springpass
+    container_name: mysql
     ports:
       - "3306:3306"
-    networks:
-      - spring-network
     volumes:
       - mysql_data:/var/lib/mysql
-
-  spring-app:
-    build: .
-    container_name: spring-container
-    depends_on:
-      - mysql
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/kaddem
-      SPRING_DATASOURCE_USERNAME: springuser
-      SPRING_DATASOURCE_PASSWORD: springpass
-    ports:
-      - "8089:8089"
-    networks:
-      - spring-network
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: springuser
+      MYSQL_PASSWORD: springpass
 
-networks:
-  spring-network:
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: rootpass
 
 volumes:
-  mysql_data:
+  mysql_data: {}
+
+networks:
+  default:
+    name: mysql_network
