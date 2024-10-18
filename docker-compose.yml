@@ -40,3 +40,4 @@ volumes:
 networks:
   springboot-mysql-network:
     name: springboot-mysql-network
+    driver: bridge
