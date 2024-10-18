@@ -53,7 +53,9 @@ ContratRepository contratRepository;
 			// You might want to set other necessary properties for the student here
 			etudiantRepository.save(e); // Save the new student
 		}
-
+		if (e.getContrats() == null) {
+			e.setContrats(new HashSet<>());  // Initialize if null
+		}
 		// Fetch the contract by its ID
 		Contrat ce = contratRepository.findByIdContrat(idContrat);
 		// Check if contract exists
