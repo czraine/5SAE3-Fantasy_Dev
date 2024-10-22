@@ -73,13 +73,21 @@ public class DepartementServiceImplMockTests {
         // Mock an existing Departement ID for deletion
         int departementId = 1;
 
+        // Create a mock Departement object to return when findById is called
+        Departement mockDepartement = new Departement();
+        mockDepartement.setIdDepart(departementId);
+
+        // Mock the repository's findById method to return the mock Departement
+        when(departementRepository.findById(departementId)).thenReturn(Optional.of(mockDepartement));
+
         // Do nothing when the repository's deleteById method is called
-        doNothing().when(departementRepository).deleteById(departementId);
+        doNothing().when(departementRepository).delete(mockDepartement);
 
         // Call the service method to delete the Departement
         departementService.deleteDepartement(departementId);
 
-        // Verify that the repository's deleteById method was called once with the correct ID
-        verify(departementRepository, times(1)).deleteById(departementId);
+        // Verify that the repository's deleteById method was called once with the correct Departement
+        verify(departementRepository, times(1)).delete(mockDepartement);
     }
+
 }

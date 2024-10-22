@@ -20,7 +20,8 @@ import org.junit.jupiter.api.Test;
         import static org.junit.jupiter.api.Assertions.assertNotNull;
         import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@SpringBootTest(classes = KaddemApplication.class)
+
 @ExtendWith(SpringExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DepartementServiceImplTests {
