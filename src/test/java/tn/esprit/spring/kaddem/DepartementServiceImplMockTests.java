@@ -11,10 +11,10 @@ import tn.esprit.spring.kaddem.entities.Departement;
 import tn.esprit.spring.kaddem.repositories.DepartementRepository;
 import tn.esprit.spring.kaddem.services.DepartementServiceImpl;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,66 +28,100 @@ public class DepartementServiceImplMockTests {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);  // Initialize Mockito annotations
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void testAddDepartement() {
-        // Create a mock Departement object
+    public void testAddDepartement_Success() {
+        // Arrange
         Departement departement = new Departement();
         departement.setNomDepart("Informatique");
 
-        // Mock the repository save method
+        // Act
         when(departementRepository.save(departement)).thenReturn(departement);
-
-        // Call the service method
         Departement savedDepartement = departementService.addDepartement(departement);
 
-        // Validate the response
+        // Assert
         assertNotNull(savedDepartement);
         assertEquals("Informatique", savedDepartement.getNomDepart());
-
-        // Verify that the repository's save method was called exactly once
         verify(departementRepository, times(1)).save(departement);
     }
 
     @Test
-    public void testRetrieveDepartement() {
-        // Mock an existing Departement
+    public void testRetrieveDepartement_Success() {
+        // Arrange
         Departement departement = new Departement(1, "Finance");
         when(departementRepository.findById(1)).thenReturn(Optional.of(departement));
 
-        // Call the service method
+        // Act
         Departement retrievedDepartement = departementService.retrieveDepartement(1);
 
-        // Validate the response
+        // Assert
         assertNotNull(retrievedDepartement);
         assertEquals("Finance", retrievedDepartement.getNomDepart());
-
-        // Verify that the repository's findById method was called with the correct ID
         verify(departementRepository, times(1)).findById(1);
     }
 
     @Test
-    public void testDeleteDepartement() {
-        // Mock an existing Departement ID for deletion
-        int departementId = 1;
+    public void testRetrieveDepartement_NotFound() {
+        // Arrange
+        when(departementRepository.findById(1)).thenReturn(Optional.empty());
 
-        // Create a mock Departement object to return when findById is called
-        Departement mockDepartement = new Departement();
-        mockDepartement.setIdDepart(departementId);
+        // Act & Assert
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
+            departementService.retrieveDepartement(1);
+        });
 
-        // Mock the repository's findById method to return the mock Departement
-        when(departementRepository.findById(departementId)).thenReturn(Optional.of(mockDepartement));
-
-        // Do nothing when the repository's deleteById method is called
-        doNothing().when(departementRepository).delete(mockDepartement);
-
-        // Call the service method to delete the Departement
-        departementService.deleteDepartement(departementId);
-
-        // Verify that the repository's deleteById method was called once with the correct Departement
-        verify(departementRepository, times(1)).delete(mockDepartement);
+        assertEquals("No Departement found with ID: 1", exception.getMessage());
+        verify(departementRepository, times(1)).findById(1);
     }
 
+    @Test
+    public void testDeleteDepartement_Success() {
+        // Arrange
+        int departementId = 1;
+        Departement departement = new Departement(departementId, "Finance");
+        when(departementRepository.findById(departementId)).thenReturn(Optional.of(departement));
+        doNothing().when(departementRepository).delete(departement);
+
+        // Act
+        departementService.deleteDepartement(departementId);
+
+        // Assert
+        verify(departementRepository, times(1)).findById(departementId);
+        verify(departementRepository, times(1)).delete(departement);
+    }
+
+    @Test
+    public void testUpdateDepartement_Success() {
+        // Arrange
+        Integer departementId = 1; // Specify the ID to be updated
+        Departement existingDepartement = new Departement(departementId, "Informatique");
+        when(departementRepository.findById(departementId)).thenReturn(Optional.of(existingDepartement));
+        when(departementRepository.save(existingDepartement)).thenReturn(existingDepartement);
+
+        // Act
+        existingDepartement.setNomDepart("Updated Informatique");
+        Departement updatedDepartement = departementService.updateDepartement(departementId, existingDepartement);
+
+        // Assert
+        assertNotNull(updatedDepartement);
+        assertEquals("Updated Informatique", updatedDepartement.getNomDepart());
+        verify(departementRepository, times(1)).save(existingDepartement);
+    }
+
+    @Test
+    void testUpdateDepartement_NotFound() {
+        // Arrange: Mock the behavior of the repository
+        Integer departementId = 1;
+        when(departementRepository.findById(departementId)).thenReturn(Optional.empty());
+
+        // Act & Assert: Execute the method and assert the exception
+        assertThrows(NoSuchElementException.class, () -> {
+            departementService.updateDepartement(departementId, new Departement());
+        });
+
+        // Verify that findById was called
+        verify(departementRepository).findById(departementId);
+    }
 }
