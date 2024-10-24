@@ -23,4 +23,12 @@ public interface IUniversiteService {
 
 
     int countDepartementsInUniversite(Integer universiteId);
+
+ void removeDepartementsFromUniversite(Integer universiteId, List<Integer> departementIds);
+
+ void addMultipleDepartementsToUniversite(Integer universiteId, List<Integer> departementIds);
+
+ List<Universite> searchUniversities(String nomUniv, int minDepartements);
+
+ List<Departement> findDepartementsByCriteria(Integer universiteId, String departementName, int minDepartements);
 }

@@ -19,26 +19,22 @@ import java.util.Set;
 public class UniversiteRestController {
 	@Autowired
 	IUniversiteService universiteService;
-	// http://localhost:8089/Kaddem/universite/retrieve-all-universites
+
 	@GetMapping("/retrieve-all-universites")
 	public List<Universite> getUniversites() {
-		List<Universite> listUniversites = universiteService.retrieveAllUniversites();
-		return listUniversites;
+		return universiteService.retrieveAllUniversites();
 	}
-	// http://localhost:8089/Kaddem/universite/retrieve-universite/8
+
 	@GetMapping("/retrieve-universite/{universite-id}")
 	public Universite retrieveUniversite(@PathVariable("universite-id") Integer universiteId) {
 		return universiteService.retrieveUniversite(universiteId);
 	}
 
-	// http://localhost:8089/Kaddem/universite/add-universite
 	@PostMapping("/add-universite")
 	public Universite addUniversite(@RequestBody Universite u) {
-		Universite universite = universiteService.addUniversite(u);
-		return universite;
+		return universiteService.addUniversite(u);
 	}
 
-	// http://localhost:8089/Kaddem/universite/remove-universite/1
 	@DeleteMapping("/remove-universite/{universite-id}")
 	public void removeUniversite(@PathVariable("universite-id") Integer universiteId) {
 		universiteService.deleteUniversite(universiteId);
@@ -49,22 +45,18 @@ public class UniversiteRestController {
 		return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 	}
 
-	// http://localhost:8089/Kaddem/universite/update-universite
 	@PutMapping("/update-universite")
 	public Universite updateUniversite(@RequestBody Universite u) {
-		Universite u1= universiteService.updateUniversite(u);
-		return u1;
+		return universiteService.updateUniversite(u);
 	}
 
-	//@PutMapping("/affecter-etudiant-departement")
-	@PutMapping(value="/affecter-universite-departement/{universiteId}/{departementId}")
-	public void affectertUniversiteToDepartement(@PathVariable("universiteId") Integer universiteId, @PathVariable("departementId")Integer departementId){
+	@PutMapping("/affecter-universite-departement/{universiteId}/{departementId}")
+	public void affecterUniversiteToDepartement(@PathVariable("universiteId") Integer universiteId, @PathVariable("departementId") Integer departementId) {
 		universiteService.assignUniversiteToDepartement(universiteId, departementId);
 	}
 
-	@GetMapping(value = "/listerDepartementsUniversite/{idUniversite}")
+	@GetMapping("/listerDepartementsUniversite/{idUniversite}")
 	public Set<Departement> listerDepartementsUniversite(@PathVariable("idUniversite") Integer idUniversite) {
-
 		return universiteService.retrieveDepartementsByUniversite(idUniversite);
 	}
 
@@ -73,6 +65,28 @@ public class UniversiteRestController {
 		return universiteService.countDepartementsInUniversite(universiteId);
 	}
 
+	// Nouveau point d'entrée pour les fonctions avancées
+	@GetMapping("/find-departements-criteria/{universite-id}")
+	public List<Departement> findDepartementsByCriteria(@PathVariable("universite-id") Integer universiteId,
+														@RequestParam String departementName,
+														@RequestParam int minDepartements) {
+		return universiteService.findDepartementsByCriteria(universiteId, departementName, minDepartements);
+	}
+
+	@DeleteMapping("/remove-departements/{universite-id}")
+	public void removeDepartementsFromUniversite(@PathVariable("universite-id") Integer universiteId,
+												 @RequestBody List<Integer> departementIds) {
+		universiteService.removeDepartementsFromUniversite(universiteId, departementIds);
+	}
+
+	@PutMapping("/add-departements/{universite-id}")
+	public void addMultipleDepartementsToUniversite(@PathVariable("universite-id") Integer universiteId,
+													@RequestBody List<Integer> departementIds) {
+		universiteService.addMultipleDepartementsToUniversite(universiteId, departementIds);
+	}
+
+	@GetMapping("/search-universities")
+	public List<Universite> searchUniversities(@RequestParam String nomUniv, @RequestParam int minDepartements) {
+		return universiteService.searchUniversities(nomUniv, minDepartements);
+	}
 }
-
-

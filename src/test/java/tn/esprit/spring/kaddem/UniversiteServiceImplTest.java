@@ -5,133 +5,141 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.spring.kaddem.entities.Departement;
 import tn.esprit.spring.kaddem.entities.Universite;
+import tn.esprit.spring.kaddem.repositories.DepartementRepository;
 import tn.esprit.spring.kaddem.repositories.UniversiteRepository;
 import tn.esprit.spring.kaddem.services.UniversiteServiceImpl;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest // Charger le contexte Spring pour les tests
-@ActiveProfiles("test") // Utilise le fichier application-test.properties pour configurer MySQL
-class UniversiteServiceImplTest {
+@SpringBootTest
+@Transactional
+@ActiveProfiles("test")
+class UniversiteServiceImplJUnitTest {
 
     @Autowired
     private UniversiteRepository universiteRepository;
+
+    @Autowired
+    private DepartementRepository departementRepository;
 
     @Autowired
     private UniversiteServiceImpl universiteServiceImpl;
 
     @BeforeEach
     void setUp() {
-        // Nettoyer la base de données de test avant chaque test pour éviter des conflits
         universiteRepository.deleteAll();
+        departementRepository.deleteAll();
     }
 
     @Test
     void testAddUniversite() {
-        // Given: créer une instance de Universite
-        Universite universite = new Universite();
-        universite.setNomUniv("Université MySQL Test");
-
-        // When: appel de la méthode addUniversite
+        Universite universite = new Universite("Université JUnit Test");
         Universite result = universiteServiceImpl.addUniversite(universite);
 
-        // Then: vérifier que l'université est bien enregistrée
         assertNotNull(result);
-        assertEquals("Université MySQL Test", result.getNomUniv());
-        assertNotNull(result.getIdUniv()); // Vérifier que l'ID est généré
-    }
-
-    @Test
-    void testRetrieveAllUniversites() {
-        // Given: ajouter plusieurs universités dans la base de données
-        Universite universite1 = new Universite();
-        universite1.setNomUniv("Université 1");
-
-        Universite universite2 = new Universite();
-        universite2.setNomUniv("Université 2");
-
-        universiteRepository.save(universite1);
-        universiteRepository.save(universite2);
-
-        // When: appel de la méthode retrieveAllUniversites
-        var universites = universiteServiceImpl.retrieveAllUniversites();
-
-        // Then: vérifier que les universités sont bien récupérées
-        assertEquals(2, universites.size());
-    }
-
-    @Test
-    void testRetrieveUniversite() {
-        // Given: ajouter une université dans la base de données
-        Universite universite = new Universite();
-        universite.setNomUniv("Université à récupérer");
-        Universite savedUniversite = universiteRepository.save(universite);
-
-        // When: appel de la méthode retrieveUniversite
-        Universite foundUniversite = universiteServiceImpl.retrieveUniversite(savedUniversite.getIdUniv());
-
-        // Then: vérifier que l'université récupérée est correcte
-        assertNotNull(foundUniversite);
-        assertEquals(savedUniversite.getNomUniv(), foundUniversite.getNomUniv());
-    }
-
-    @Test
-    void testUpdateUniversite() {
-        // Given: ajouter une université dans la base de données
-        Universite universite = new Universite();
-        universite.setNomUniv("Université à mettre à jour");
-        Universite savedUniversite = universiteRepository.save(universite);
-
-        // When: modifier l'université et appeler updateUniversite
-        savedUniversite.setNomUniv("Université mise à jour");
-        Universite updatedUniversite = universiteServiceImpl.updateUniversite(savedUniversite);
-
-        // Then: vérifier que l'université a bien été mise à jour
-        assertEquals("Université mise à jour", updatedUniversite.getNomUniv());
-    }
-
-    @Test
-    void testDeleteUniversite() {
-        // Given: ajouter une université dans la base de données
-        Universite universite = new Universite();
-        universite.setNomUniv("Université à supprimer");
-        Universite savedUniversite = universiteRepository.save(universite);
-
-        // When: appel de la méthode deleteUniversite
-        universiteServiceImpl.deleteUniversite(savedUniversite.getIdUniv());
-
-        // Then: vérifier que l'université a bien été supprimée
-        assertFalse(universiteRepository.findById(savedUniversite.getIdUniv()).isPresent());
+        assertEquals("Université JUnit Test", result.getNomUniv());
+        assertNotNull(result.getIdUniv());
     }
 
     @Test
     void testCountDepartementsInUniversite() {
-        // Given: créer une université avec deux départements
-        Universite universite = new Universite();
-        universite.setNomUniv("Université Test");
+        Universite universite = new Universite("Université Test");
+        Departement dep1 = new Departement("Informatique");
+        Departement dep2 = new Departement("Mathématiques");
 
-        Departement departement1 = new Departement();
-        departement1.setNomDepart("Informatique");
+        dep1 = departementRepository.save(dep1); // Persisting the departments before associating
+        dep2 = departementRepository.save(dep2);
 
-        Departement departement2 = new Departement();
-        departement2.setNomDepart("Mathématiques");
+        universiteServiceImpl.addUniversite(universite);
+        universiteServiceImpl.addMultipleDepartementsToUniversite(universite.getIdUniv(), List.of(dep1.getIdDepart(), dep2.getIdDepart()));
 
-        Set<Departement> departements = new HashSet<>();
-        departements.add(departement1);
-        departements.add(departement2);
-        universite.setDepartements(departements);
+        int count = universiteServiceImpl.countDepartementsInUniversite(universite.getIdUniv());
+        assertEquals(2, count);
+    }
 
-        universiteRepository.save(universite); // Sauvegarder l'université dans la base de données
+    @Test
+    void testAddMultipleDepartementsToUniversite() {
+        Universite universite = new Universite("Université Test");
+        universite = universiteServiceImpl.addUniversite(universite);
 
-        // When: appel de la méthode
-        int nombreDepartements = universiteServiceImpl.countDepartementsInUniversite(universite.getIdUniv());
+        Departement dep1 = new Departement("Informatique");
+        Departement dep2 = new Departement("Mathématiques");
 
-        // Then: vérifier que le nombre de départements est correct
-        assertEquals(2, nombreDepartements); // Il devrait y avoir 2 départements
+        // Persist the departments before adding them to the university
+        dep1 = departementRepository.save(dep1);
+        dep2 = departementRepository.save(dep2);
+
+        universiteServiceImpl.addMultipleDepartementsToUniversite(universite.getIdUniv(), List.of(dep1.getIdDepart(), dep2.getIdDepart()));
+
+        Universite updatedUniversite = universiteServiceImpl.retrieveUniversite(universite.getIdUniv());
+        assertEquals(2, updatedUniversite.getDepartements().size());
+    }
+
+    @Test
+    void testRemoveDepartementsFromUniversite() {
+        Universite universite = new Universite("Université Test");
+        universite = universiteServiceImpl.addUniversite(universite);
+
+        Departement dep1 = new Departement("Informatique");
+        Departement dep2 = new Departement("Mathématiques");
+
+        // Persist departments and associate them
+        dep1 = departementRepository.save(dep1);
+        dep2 = departementRepository.save(dep2);
+
+        universiteServiceImpl.addMultipleDepartementsToUniversite(universite.getIdUniv(), List.of(dep1.getIdDepart(), dep2.getIdDepart()));
+
+        universiteServiceImpl.removeDepartementsFromUniversite(universite.getIdUniv(), List.of(dep1.getIdDepart()));
+
+        Universite updatedUniversite = universiteServiceImpl.retrieveUniversite(universite.getIdUniv());
+        assertEquals(1, updatedUniversite.getDepartements().size());
+    }
+
+    @Test
+    void testFindDepartementsByCriteria() {
+        Universite universite = new Universite("Université Test");
+        universite = universiteServiceImpl.addUniversite(universite);
+
+        Departement dep1 = new Departement("Informatique");
+        Departement dep2 = new Departement("Mathématiques");
+
+        dep1 = departementRepository.save(dep1);
+        dep2 = departementRepository.save(dep2);
+
+        universiteServiceImpl.addMultipleDepartementsToUniversite(universite.getIdUniv(), List.of(dep1.getIdDepart(), dep2.getIdDepart()));
+
+        List<Departement> departements = universiteServiceImpl.findDepartementsByCriteria(universite.getIdUniv(), "Informatique", 1);
+
+        assertEquals(1, departements.size());
+        assertEquals("Informatique", departements.get(0).getNomDepart());
+    }
+
+    @Test
+    void testSearchUniversities() {
+        Universite universite1 = new Universite("Université de Paris");
+        Universite universite2 = new Universite("Université de Lyon");
+
+        universiteServiceImpl.addUniversite(universite1);
+        universiteServiceImpl.addUniversite(universite2);
+
+        List<Universite> result = universiteServiceImpl.searchUniversities("Université", 0);
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    void testDeleteUniversite() {
+        Universite universite = new Universite("Université à Supprimer");
+        universite = universiteServiceImpl.addUniversite(universite);
+
+        universiteServiceImpl.deleteUniversite(universite.getIdUniv());
+
+        Universite finalUniversite = universite;
+        assertThrows(NoSuchElementException.class, () -> universiteServiceImpl.retrieveUniversite(finalUniversite.getIdUniv()));
     }
 }

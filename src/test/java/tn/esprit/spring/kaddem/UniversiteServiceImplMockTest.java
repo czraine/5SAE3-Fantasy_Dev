@@ -7,19 +7,26 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import tn.esprit.spring.kaddem.entities.Departement;
 import tn.esprit.spring.kaddem.entities.Universite;
+import tn.esprit.spring.kaddem.repositories.DepartementRepository;
 import tn.esprit.spring.kaddem.repositories.UniversiteRepository;
 import tn.esprit.spring.kaddem.services.UniversiteServiceImpl;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class UniversiteServiceImplMockTest {
+class UniversiteServiceImplMockitoTest {
 
     @Mock
     private UniversiteRepository universiteRepository;
+
+    @Mock
+    private DepartementRepository departementRepository;
 
     @InjectMocks
     private UniversiteServiceImpl universiteServiceImpl;
@@ -31,59 +38,59 @@ class UniversiteServiceImplMockTest {
 
     @Test
     void testAddUniversite() {
-        // Given
         Universite universite = new Universite(1, "Université Mockito Test");
 
-        // Simuler le comportement du repository
         when(universiteRepository.save(any(Universite.class))).thenReturn(universite);
 
-        // When
         Universite result = universiteServiceImpl.addUniversite(universite);
 
-        // Then
         assertNotNull(result);
         assertEquals("Université Mockito Test", result.getNomUniv());
 
-        // Vérifier que la méthode save() a bien été appelée
         verify(universiteRepository, times(1)).save(any(Universite.class));
     }
 
     @Test
     void testRetrieveAllUniversites() {
-        // Given: créer deux universités factices
         Universite universite1 = new Universite(1, "Université 1");
         Universite universite2 = new Universite(2, "Université 2");
 
-        // Simuler le comportement du repository
         when(universiteRepository.findAll()).thenReturn(Arrays.asList(universite1, universite2));
 
-        // When
         List<Universite> universites = universiteServiceImpl.retrieveAllUniversites();
 
-        // Then
         assertEquals(2, universites.size());
         assertEquals("Université 1", universites.get(0).getNomUniv());
 
-        // Vérifier que la méthode findAll() a bien été appelée
         verify(universiteRepository, times(1)).findAll();
     }
 
     @Test
+    void testRetrieveUniversite() {
+        Universite universite = new Universite(1, "Université 1");
+
+        when(universiteRepository.findById(1)).thenReturn(Optional.of(universite));
+
+        Universite result = universiteServiceImpl.retrieveUniversite(1);
+
+        assertNotNull(result);
+        assertEquals("Université 1", result.getNomUniv());
+
+        verify(universiteRepository, times(1)).findById(1);
+    }
+
+    @Test
     void testDeleteUniversite() {
-        // Given: Simuler la suppression de l'université
         Universite universite = new Universite(1, "Université à Supprimer");
         when(universiteRepository.findById(1)).thenReturn(Optional.of(universite));
 
-        // When
         universiteServiceImpl.deleteUniversite(1);
 
-        // Then: Vérifier que la méthode delete() a bien été appelée
         verify(universiteRepository, times(1)).delete(universite);
     }
 
     @Test
     void testCountDepartementsInUniversite() {
-        // Given: créer une université simulée avec deux départements
         Universite universite = new Universite();
         universite.setNomUniv("Université Test");
 
@@ -98,16 +105,94 @@ class UniversiteServiceImplMockTest {
         departements.add(departement2);
         universite.setDepartements(departements);
 
-        // Simuler la récupération de l'université avec l'ID 1
         when(universiteRepository.findById(anyInt())).thenReturn(Optional.of(universite));
 
-        // When: appel de la méthode
         int nombreDepartements = universiteServiceImpl.countDepartementsInUniversite(1);
 
-        // Then: vérifier que le nombre de départements est correct
-        assertEquals(2, nombreDepartements); // Il devrait y avoir 2 départements
+        assertEquals(2, nombreDepartements);
 
-        // Vérifier que la méthode findById a été appelée une seule fois
         verify(universiteRepository, times(1)).findById(anyInt());
     }
+
+    @Test
+    void testFindDepartementsByCriteria() {
+        Universite universite = new Universite();
+        universite.setNomUniv("Université Test");
+
+        Departement departement1 = new Departement();
+        departement1.setNomDepart("Informatique");
+
+        Departement departement2 = new Departement();
+        departement2.setNomDepart("Mathématiques");
+
+        universite.setDepartements(new HashSet<>(Arrays.asList(departement1, departement2)));
+        when(universiteRepository.findById(1)).thenReturn(Optional.of(universite));
+
+        List<Departement> departements = universiteServiceImpl.findDepartementsByCriteria(1, "Informatique", 1);
+
+        assertEquals(1, departements.size());
+        assertEquals("Informatique", departements.get(0).getNomDepart());
+    }
+
+    @Test
+    void testAddMultipleDepartementsToUniversite() {
+        Universite universite = new Universite();
+        universite.setNomUniv("Université Test");
+        when(universiteRepository.findById(1)).thenReturn(Optional.of(universite));
+
+        Departement departement1 = new Departement();
+        departement1.setIdDepart(1);
+        departement1.setNomDepart("Informatique");
+
+        Departement departement2 = new Departement();
+        departement2.setIdDepart(2);
+        departement2.setNomDepart("Mathématiques");
+
+        when(departementRepository.findById(1)).thenReturn(Optional.of(departement1));
+        when(departementRepository.findById(2)).thenReturn(Optional.of(departement2));
+
+        universiteServiceImpl.addMultipleDepartementsToUniversite(1, Arrays.asList(1, 2));
+
+        assertEquals(2, universite.getDepartements().size());
+    }
+
+    @Test
+    void testRemoveDepartementsFromUniversite() {
+        Universite universite = new Universite();
+        universite.setNomUniv("Université Test");
+
+        Departement departement1 = new Departement();
+        departement1.setIdDepart(1);
+        departement1.setNomDepart("Informatique");
+
+        Departement departement2 = new Departement();
+        departement2.setIdDepart(2);
+        departement2.setNomDepart("Mathématiques");
+
+        universite.setDepartements(new HashSet<>(Arrays.asList(departement1, departement2)));
+        when(universiteRepository.findById(1)).thenReturn(Optional.of(universite));
+
+        universiteServiceImpl.removeDepartementsFromUniversite(1, Arrays.asList(1));
+
+        assertEquals(1, universite.getDepartements().size());
+    }
+
+    @Test
+    void testSearchUniversities() {
+        Universite universite1 = new Universite();
+        universite1.setNomUniv("Université Paris");
+        universite1.setDepartements(new HashSet<>(Arrays.asList(new Departement())));
+
+        Universite universite2 = new Universite();
+        universite2.setNomUniv("Université Lyon");
+        universite2.setDepartements(new HashSet<>(Arrays.asList(new Departement(), new Departement())));
+
+        when(universiteRepository.findAll()).thenReturn(Arrays.asList(universite1, universite2));
+
+        List<Universite> result = universiteServiceImpl.searchUniversities("Université", 2);
+
+        assertEquals(1, result.size());
+        assertEquals("Université Lyon", result.get(0).getNomUniv());
+    }
+
 }
