@@ -1,25 +1,20 @@
 package tn.esprit.spring.kaddem;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import tn.esprit.spring.kaddem.entities.Equipe;
 import tn.esprit.spring.kaddem.entities.Niveau;
 import tn.esprit.spring.kaddem.repositories.EquipeRepository;
 import tn.esprit.spring.kaddem.services.EquipeServiceImpl;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class EquipeServiceImplTest {
+class EquipeServiceImplTest {
 
     private EquipeServiceImpl equipeService;
     private EquipeRepository equipeRepository;
@@ -36,17 +31,20 @@ public class EquipeServiceImplTest {
 
             @Override
             public Iterable<Equipe> findAllById(Iterable<Integer> integers) {
-                return null;
+                // This method is not used in this test, so we throw UnsupportedOperationException.
+                throw new UnsupportedOperationException("Method not implemented because it's not used in this test.");
             }
 
             @Override
             public long count() {
-                return 0;
+                // This method is not used in this test, so we throw UnsupportedOperationException.
+                throw new UnsupportedOperationException("Method not implemented because it's not used in this test.");
             }
 
             @Override
             public void deleteById(Integer integer) {
-
+                // This method is not used in this test, so we throw UnsupportedOperationException.
+                throw new UnsupportedOperationException("Method not implemented because it's not used in this test.");
             }
 
             @Override
@@ -57,7 +55,8 @@ public class EquipeServiceImplTest {
 
             @Override
             public <S extends Equipe> Iterable<S> saveAll(Iterable<S> entities) {
-                return null;
+                // This method is not used in this test, so we throw UnsupportedOperationException.
+                throw new UnsupportedOperationException("Method not implemented because it's not used in this test.");
             }
 
             @Override
@@ -67,27 +66,31 @@ public class EquipeServiceImplTest {
 
             @Override
             public void deleteAllById(Iterable<? extends Integer> integers) {
-
+                // This method is not used in this test, so we throw UnsupportedOperationException.
+                throw new UnsupportedOperationException("Method not implemented because it's not used in this test.");
             }
 
             @Override
             public void deleteAll(Iterable<? extends Equipe> entities) {
-
+                // This method is not used in this test, so we throw UnsupportedOperationException.
+                throw new UnsupportedOperationException("Method not implemented because it's not used in this test.");
             }
 
             @Override
             public void deleteAll() {
-
+                // This method is not used in this test, so we throw UnsupportedOperationException.
+                throw new UnsupportedOperationException("Method not implemented because it's not used in this test.");
             }
 
             @Override
-            public java.util.Optional<Equipe> findById(Integer id) {
+            public Optional<Equipe> findById(Integer id) {
                 return equipes.stream().filter(e -> e.getIdEquipe().equals(id)).findFirst();
             }
 
             @Override
             public boolean existsById(Integer integer) {
-                return false;
+                // This method is not used in this test, so we throw UnsupportedOperationException.
+                throw new UnsupportedOperationException("Method not implemented because it's not used in this test.");
             }
         };
 
