@@ -20,18 +20,15 @@
             <sonar.host.url>http://192.168.50.4:9000</sonar.host.url>
     </properties>
     <!-- Deploy to Nexus -->
+    <distributionManagement>
+        <repository>
+            <id>deploymentRepo</id>
+            <name>Nexus Repository</name>
 
-        <distributionManagement>
-            <repository>
-                <id>deploymentRepo</id>
-                <url>http://localhost:8081/repository/maven-releases/</url>
-            </repository>
-            <snapshotRepository>
-                <id>deploymentRepo</id>
-                <url>http://localhost:8081/repository/maven-snapshots/</url>
-            </snapshotRepository>
-        </distributionManagement>
-    
+        <url>http://localhost:8081/repository/maven-releases/</url>
+        </repository>
+    </distributionManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.mockito</groupId>
