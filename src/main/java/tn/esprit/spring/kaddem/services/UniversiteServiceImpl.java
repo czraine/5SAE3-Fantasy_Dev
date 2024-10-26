@@ -76,7 +76,7 @@ public class UniversiteServiceImpl implements IUniversiteService {
         return universite.getDepartements().size();
     }
 
-    // Méthode pour rechercher les universités selon les critères
+
     @Override
     public List<Universite> searchUniversities(String nomUniv, int minDepartements) {
         return ((List<Universite>) universiteRepository.findAll())
@@ -85,7 +85,6 @@ public class UniversiteServiceImpl implements IUniversiteService {
                 .collect(Collectors.toList());
     }
 
-    // Méthode pour trouver des départements selon des critères
     @Override
     public List<Departement> findDepartementsByCriteria(Integer universiteId, String departementName, int minDepartements) {
         Universite universite = universiteRepository.findById(universiteId)
@@ -113,7 +112,7 @@ public class UniversiteServiceImpl implements IUniversiteService {
         Universite universite = universiteRepository.findById(idUniversite).orElseThrow(() -> new NoSuchElementException("Universite not found"));
 
         if (universite.getDepartements() == null) {
-            universite.setDepartements(new HashSet<>()); // Initialiser le Set s'il est null
+            universite.setDepartements(new HashSet<>());
         }
 
         departementIds.forEach(departementId -> {

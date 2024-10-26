@@ -65,7 +65,7 @@ public class UniversiteRestController {
 		return universiteService.countDepartementsInUniversite(universiteId);
 	}
 
-	// Nouveau point d'entrée pour les fonctions avancées
+
 	@GetMapping("/find-departements-criteria/{universite-id}")
 	public List<Departement> findDepartementsByCriteria(@PathVariable("universite-id") Integer universiteId,
 														@RequestParam String departementName,
