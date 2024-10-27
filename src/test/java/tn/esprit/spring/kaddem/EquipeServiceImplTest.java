@@ -19,7 +19,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class EquipeServiceImplTest {
+ class EquipeServiceImplTest {
 
     private EquipeServiceImpl equipeService;
     private EquipeRepository equipeRepository;
@@ -41,13 +41,14 @@ public class EquipeServiceImplTest {
 
             @Override
             public long count() {
-                return 0;
-            }
+return 0 ;            }
 
             @Override
             public void deleteById(Integer integer) {
+                System.out.println("done");
 
             }
+
 
             @Override
             public <S extends Equipe> S save(S s) {
@@ -67,18 +68,22 @@ public class EquipeServiceImplTest {
 
             @Override
             public void deleteAllById(Iterable<? extends Integer> integers) {
+                System.out.println("done");
 
             }
 
             @Override
             public void deleteAll(Iterable<? extends Equipe> entities) {
+                System.out.println("done");
 
             }
 
             @Override
             public void deleteAll() {
+                System.out.println("done");
 
             }
+
 
             @Override
             public java.util.Optional<Equipe> findById(Integer id) {
