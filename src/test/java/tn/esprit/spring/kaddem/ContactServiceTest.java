@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(SpringExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest
-public class ContactServiceTest {
+class ContactServiceTest {
 
     @InjectMocks
     private ContratServiceImpl contratService;
@@ -167,7 +167,7 @@ public class ContactServiceTest {
     }
 
     @Test
-    public void testAffectContratToEtudiant_StudentDoesNotExist() {
+     void testAffectContratToEtudiant_StudentDoesNotExist() {
         // Mock the student not existing
         when(etudiantRepository.findByNomEAndPrenomE("John", "Doe")).thenReturn(null);
 
@@ -189,7 +189,7 @@ public class ContactServiceTest {
     }
 
     @Test
-    public void testAffectContratToEtudiant_StudentExistsWith5OrMoreContracts() {
+     void testAffectContratToEtudiant_StudentExistsWith5OrMoreContracts() {
         // Mock the student with 5 active contracts
         Etudiant student = new Etudiant();
         student.setNomE("John");

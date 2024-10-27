@@ -8,7 +8,6 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import tn.esprit.spring.kaddem.entities.Contrat;
 import tn.esprit.spring.kaddem.entities.Etudiant;
 import tn.esprit.spring.kaddem.entities.Specialite;
@@ -26,7 +25,7 @@ import static org.mockito.Mockito.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class) // Define the order of tests
 @SpringBootTest // Load the Spring Application Context for Integration Tests
-public class ContactServiceMockTest {
+ class ContactServiceMockTest {
 
     @Mock
     private ContratRepository contratRepository;
@@ -93,7 +92,7 @@ public class ContactServiceMockTest {
     }
 
     @Test
-    public void testAffectContratToEtudiantWithFiveActiveContracts() {
+     void testAffectContratToEtudiantWithFiveActiveContracts() {
         Etudiant etudiant = new Etudiant();
         etudiant.setNomE("John");
         etudiant.setPrenomE("Smith");
@@ -151,7 +150,7 @@ public class ContactServiceMockTest {
 
 
     @Test
-    public void testGetChiffreAffaireEntreDeuxDates() throws Exception {
+     void testGetChiffreAffaireEntreDeuxDates() throws Exception {
         // Prepare test data
         Date startDate = sdf.parse("2024-01-01");
         Date endDate = sdf.parse("2024-12-31");
@@ -183,7 +182,7 @@ public class ContactServiceMockTest {
     }
 
     @Test
-    public void testGetChiffreAffaireEntreDeuxDates_NoValidContracts() throws Exception {
+     void testGetChiffreAffaireEntreDeuxDates_NoValidContracts() throws Exception {
         // Prepare test data
         Date startDate = sdf.parse("2024-01-01");
         Date endDate = sdf.parse("2024-12-31");

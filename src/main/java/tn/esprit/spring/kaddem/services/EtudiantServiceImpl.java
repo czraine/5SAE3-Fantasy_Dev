@@ -1,6 +1,5 @@
 package tn.esprit.spring.kaddem.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
@@ -16,18 +15,14 @@ import tn.esprit.spring.kaddem.repositories.EtudiantRepository;
 
 import jakarta.transaction.Transactional;
 import java.util.List;
-import java.util.Set;
+import java.util.NoSuchElementException;
 
 @Service
 @Slf4j
 public class EtudiantServiceImpl implements IEtudiantService{
-	@Autowired
 	EtudiantRepository etudiantRepository ;
-	@Autowired
 	ContratRepository contratRepository;
-	@Autowired
 	EquipeRepository equipeRepository;
-    @Autowired
     DepartementRepository departementRepository;
 	public List<Etudiant> retrieveAllEtudiants(){
 	return (List<Etudiant>) etudiantRepository.findAll();
@@ -42,28 +37,43 @@ public class EtudiantServiceImpl implements IEtudiantService{
 	}
 
 	public Etudiant retrieveEtudiant(Integer  idEtudiant){
-		return etudiantRepository.findById(idEtudiant).get();
+		return etudiantRepository.findById(idEtudiant).orElseThrow(() -> new NoSuchElementException("Student not found with id: " + idEtudiant));
+
 	}
 
 	public void removeEtudiant(Integer idEtudiant){
 	Etudiant e=retrieveEtudiant(idEtudiant);
 	etudiantRepository.delete(e);
 	}
+	public void assignEtudiantToDepartement(Integer etudiantId, Integer departementId) {
+		Etudiant etudiant = etudiantRepository.findById(etudiantId).orElse(null);
+		Departement departement = departementRepository.findById(departementId).orElse(null);
 
-	public void assignEtudiantToDepartement (Integer etudiantId, Integer departementId){
-        Etudiant etudiant = etudiantRepository.findById(etudiantId).orElse(null);
-        Departement departement = departementRepository.findById(departementId).orElse(null);
-        etudiant.setDepartement(departement);
-        etudiantRepository.save(etudiant);
+		if (etudiant != null && departement != null) {
+			etudiant.setDepartement(departement);
+			etudiantRepository.save(etudiant);
+		} else {
+			// Handle case where either etudiant or departement is not found, e.g., log an error or throw an exception
+			log.error("Etudiant or Departement not found with provided IDs.");
+		}
 	}
+
 	@Transactional
-	public Etudiant addAndAssignEtudiantToEquipeAndContract(Etudiant e, long idContrat, Integer idEquipe){
-		Contrat c=contratRepository.findById(idContrat).orElse(null);
-		Equipe eq=equipeRepository.findById(idEquipe).orElse(null);
-		c.setEtudiant(e);
-		eq.getEtudiants().add(e);
-return e;
+	public Etudiant addAndAssignEtudiantToEquipeAndContract(Etudiant e, long idContrat, Integer idEquipe) {
+		Contrat contrat = contratRepository.findById(idContrat).orElse(null);
+		Equipe equipe = equipeRepository.findById(idEquipe).orElse(null);
+
+		if (contrat != null && equipe != null) {
+			contrat.setEtudiant(e);
+			equipe.getEtudiants().add(e);
+			return e;
+		} else {
+			// Handle case where contrat or equipe is not found, e.g., log an error or throw an exception
+			log.error("Contrat or Equipe not found with provided IDs.");
+			return null;
+		}
 	}
+
 
 	public 	List<Etudiant> getEtudiantsByDepartement (Integer idDepartement){
 return  etudiantRepository.findEtudiantsByDepartement_IdDepart((idDepartement));

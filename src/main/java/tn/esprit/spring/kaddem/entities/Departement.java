@@ -2,12 +2,16 @@ package tn.esprit.spring.kaddem.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Set;
 
 
+@Getter
 @Entity
+@Setter
 public class Departement implements Serializable{
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -17,7 +21,6 @@ public class Departement implements Serializable{
     @JsonIgnore
     private Set<Etudiant> etudiants;
     public Departement() {
-        // TODO Auto-generated constructor stub
     }
 
     public Departement(String nomDepart) {
@@ -31,23 +34,14 @@ public class Departement implements Serializable{
         this.nomDepart = nomDepart;
     }
 
-    public Set<Etudiant> getEtudiants() {
-        return etudiants;
-    }
-
     public void setEtudiants(Set<Etudiant> etudiants) {
         this.etudiants = etudiants;
     }
 
-    public Integer getIdDepart() {
-        return idDepart;
-    }
     public void setIdDepart(Integer idDepart) {
         this.idDepart = idDepart;
     }
-    public String getNomDepart() {
-        return nomDepart;
-    }
+
     public void setNomDepart(String nomDepart) {
         this.nomDepart = nomDepart;
     }
