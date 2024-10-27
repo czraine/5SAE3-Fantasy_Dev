@@ -6,8 +6,14 @@ import java.io.Serializable;
 import java.util.Set;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Setter
+@Getter
+@NoArgsConstructor
 public class Equipe implements Serializable{
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -23,9 +29,7 @@ public class Equipe implements Serializable{
     @OneToOne
     private DetailEquipe detailEquipe;
 
-    public Equipe() {
-        // TODO Auto-generated constructor stub
-    }
+
 
     public Equipe(String nomEquipe) {
         this.nomEquipe = nomEquipe;

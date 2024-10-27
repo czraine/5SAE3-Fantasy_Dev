@@ -3,8 +3,15 @@ package tn.esprit.spring.kaddem.entities;
 import java.io.Serializable;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Setter
+@Getter
+@NoArgsConstructor
+
 public class DetailEquipe implements Serializable{
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -13,9 +20,6 @@ public class DetailEquipe implements Serializable{
     private String thematique;
     @OneToOne(mappedBy="detailEquipe")
     private Equipe equipe;
-    public DetailEquipe() {
-        // TODO Auto-generated constructor stub
-    }
 
     public DetailEquipe(Integer salle, String thematique) {
         super();

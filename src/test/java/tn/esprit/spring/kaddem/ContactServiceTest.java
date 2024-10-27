@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(SpringExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest
-public class ContactServiceTest {
+class ContactServiceTest {
 
     @InjectMocks
     private ContratServiceImpl contratService;
@@ -33,6 +33,11 @@ public class ContactServiceTest {
     @Mock
     private EtudiantRepository etudiantRepository;
 
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
     // Test adding a contract
     @Test
     @Order(1)
@@ -108,9 +113,9 @@ public class ContactServiceTest {
         Date endDate = new Date(2023 - 1900, 11, 31); // Dec 31, 2023
 
         List<Contrat> contrats = Arrays.asList(
-                new Contrat(new Date(123, 0, 1), new Date(123, 11, 31), Specialite.IA, false, 500),  // IA contract valid for the whole year
-                new Contrat(new Date(123, 0, 1), new Date(123, 11, 31), Specialite.CLOUD, false, 1000), // CLOUD contract valid for the whole year
-                new Contrat(new Date(123, 0, 1), new Date(123, 11, 31), Specialite.RESEAUX, false, 1500) // RESEAUX contract valid for the whole year
+                new Contrat(new Date(123, 0, 1), new Date(123, 11, 31), Specialite.IA, false, 500),
+                new Contrat(new Date(123, 0, 1), new Date(123, 11, 31), Specialite.CLOUD, false, 1000),
+                new Contrat(new Date(123, 0, 1), new Date(123, 11, 31), Specialite.RESEAUX, false, 1500)
         );
 
         when(contratRepository.findAll()).thenReturn(contrats);
@@ -161,4 +166,51 @@ public class ContactServiceTest {
         assertEquals(5, nbContratsValides, "There should be 5 valid contracts between the two dates.");
     }
 
+    @Test
+     void testAffectContratToEtudiant_StudentDoesNotExist() {
+        // Mock the student not existing
+        when(etudiantRepository.findByNomEAndPrenomE("John", "Doe")).thenReturn(null);
+
+        // Prepare new contract
+        Contrat contrat = new Contrat();
+        contrat.setIdContrat(1L);
+        when(contratRepository.findByIdContrat(1L)).thenReturn(contrat);
+
+        // Mock the contract retrieval
+        when(contratRepository.save(contrat)).thenReturn(contrat);
+
+        // Call method under test
+        Contrat result = contratService.affectContratToEtudiant(1L, "John", "Doe");
+
+        // Assert that the student was created and the contract assigned
+        assertNotNull(result);
+        assertEquals("John", result.getEtudiant().getNomE());
+        assertEquals("Doe", result.getEtudiant().getPrenomE());
+    }
+
+    @Test
+     void testAffectContratToEtudiant_StudentExistsWith5OrMoreContracts() {
+        // Mock the student with 5 active contracts
+        Etudiant student = new Etudiant();
+        student.setNomE("John");
+        student.setPrenomE("Doe");
+        Set<Contrat> activeContracts = new HashSet<>();
+        for (int i = 0; i < 5; i++) {
+            Contrat c = new Contrat();
+            c.setArchive(false);
+            activeContracts.add(c);
+        }
+        student.setContrats(activeContracts);
+        when(etudiantRepository.findByNomEAndPrenomE("John", "Doe")).thenReturn(student);
+
+        // Prepare contract
+        Contrat contrat = new Contrat();
+        contrat.setIdContrat(1L);
+        when(contratRepository.findByIdContrat(1L)).thenReturn(contrat);
+
+        Contrat result = contratService.affectContratToEtudiant(1L, "John", "Doe");
+
+        assertNull(result);
+    }
 }
+

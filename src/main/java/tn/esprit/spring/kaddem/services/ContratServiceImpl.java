@@ -15,12 +15,10 @@ import java.util.*;
 @Slf4j
 @Service
 public class ContratServiceImpl implements IContratService{
-@Autowired
 ContratRepository contratRepository;
-@Autowired
 	EtudiantRepository etudiantRepository;
 	public List<Contrat> retrieveAllContrats(){
-		return (List<Contrat>) contratRepository.findAll();
+		return contratRepository.findAll();
 	}
 
 	public Contrat updateContrat (Contrat  ce){
@@ -53,7 +51,9 @@ ContratRepository contratRepository;
 			// You might want to set other necessary properties for the student here
 			etudiantRepository.save(e); // Save the new student
 		}
-
+		if (e.getContrats() == null) {
+			e.setContrats(new HashSet<>());  // Initialize if null
+		}
 		// Fetch the contract by its ID
 		Contrat ce = contratRepository.findByIdContrat(idContrat);
 		// Check if contract exists
@@ -80,27 +80,31 @@ ContratRepository contratRepository;
 		return contratRepository.getnbContratsValides(startDate, endDate);
 	}
 
-	public void retrieveAndUpdateStatusContrat(){
-		List<Contrat>contrats=contratRepository.findAll();
-		List<Contrat> contrats15j = new ArrayList<>();  // Initialize list
-		List<Contrat> contratsAarchiver = new ArrayList<>();
+	public void retrieveAndUpdateStatusContrat() {
+		List<Contrat> contrats = contratRepository.findAll();
+		List<Contrat> contrats15Days = new ArrayList<>();  // Renamed to match convention
+		List<Contrat> contratsToArchive = new ArrayList<>();  // Renamed to match convention
+
+		Date currentDate = new Date();  // Renamed for clarity
 		for (Contrat contrat : contrats) {
-			Date dateSysteme = new Date();
-			if (contrat.getArchive()==false) {
-				long difference_In_Time = dateSysteme.getTime() - contrat.getDateFinContrat().getTime();
-				long difference_In_Days = (difference_In_Time / (1000 * 60 * 60 * 24)) % 365;
-				if (difference_In_Days==15){
-					contrats15j.add(contrat);
-					log.info(" Contrat : " + contrat);
+			if (Boolean.FALSE.equals(contrat.getArchive())) {
+				long timeDifference = currentDate.getTime() - contrat.getDateFinContrat().getTime();
+				long daysDifference = (timeDifference / (1000 * 60 * 60 * 24)) % 365;
+
+				if (daysDifference == 15) {
+					contrats15Days.add(contrat);
+					log.info("Contrat: " + contrat);
 				}
-				if (!contrat.getArchive() && dateSysteme.after(contrat.getDateFinContrat())) {
-					contratsAarchiver.add(contrat);
+
+				if (Boolean.TRUE.equals(!contrat.getArchive()) && currentDate.after(contrat.getDateFinContrat())) {
+					contratsToArchive.add(contrat);
 					contrat.setArchive(true);
 					contratRepository.save(contrat);
 				}
 			}
 		}
 	}
+
 	public float getChiffreAffaireEntreDeuxDates(Date startDate, Date endDate) {
 		List<Contrat> contrats = contratRepository.findAll();
 		float chiffreAffaireEntreDeuxDates = 0;

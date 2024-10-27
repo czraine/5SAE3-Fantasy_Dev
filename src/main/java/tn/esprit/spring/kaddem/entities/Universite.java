@@ -6,7 +6,11 @@ import java.io.Serializable;
 import java.util.Set;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
 public class Universite implements Serializable{
     @Id
@@ -17,7 +21,6 @@ public class Universite implements Serializable{
     @JsonIgnore
     private Set<Departement> departements;
     public Universite() {
-        // TODO Auto-generated constructor stub
     }
 
     public Universite(String nomUniv) {
@@ -31,23 +34,14 @@ public class Universite implements Serializable{
         this.nomUniv = nomUniv;
     }
 
-    public Set<Departement> getDepartements() {
-        return departements;
-    }
-
     public void setDepartements(Set<Departement> departements) {
         this.departements = departements;
     }
 
-    public Integer getIdUniv() {
-        return idUniv;
-    }
     public void setIdUniv(Integer idUniv) {
         this.idUniv = idUniv;
     }
-    public String getNomUniv() {
-        return nomUniv;
-    }
+
     public void setNomUniv(String nomUniv) {
         this.nomUniv = nomUniv;
     }
