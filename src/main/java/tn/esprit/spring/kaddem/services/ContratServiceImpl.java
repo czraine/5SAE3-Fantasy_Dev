@@ -43,13 +43,13 @@ ContratRepository contratRepository;
 
 	public Contrat affectContratToEtudiant(long idContrat, String nomE, String prenomE) {
 		// Fetch the student by name
-		Etudiant e = etudiantRepository.findByNomEAndPrenomE(nomE, prenomE);
+		Etudiant e = etudiantRepository.findByNomAndPrenom(nomE, prenomE);
 
 		// If student does not exist, create a new student
 		if (e == null) {
 			e = new Etudiant();
-			e.setNomE(nomE);
-			e.setPrenomE(prenomE);
+			e.setNom(nomE);
+			e.setPrenom(prenomE);
 			// You might want to set other necessary properties for the student here
 			etudiantRepository.save(e); // Save the new student
 		}

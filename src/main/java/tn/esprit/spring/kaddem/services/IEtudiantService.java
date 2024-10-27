@@ -25,6 +25,7 @@ public interface IEtudiantService {
     List<Etudiant> findEtudiantsByNomOrPrenom(String nomOrPrenom);
 
     // Nouvelle fonctionnalité: Obtenir les étudiants avec contrat actif
+
     List<Etudiant> getEtudiantsWithActiveContrats();
 
     // Nouvelle fonctionnalité: Vérifier si un étudiant est dans une équipe

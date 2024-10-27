@@ -23,7 +23,7 @@ public class Etudiant implements Serializable {
 
     @OneToMany(mappedBy = "etudiant", cascade = CascadeType.ALL)
     @JsonIgnore
-    private Set<Contrat> contrats = new HashSet<>(); // Initialize to avoid NullPointerException
+    private Set<Contrat> contrats = new HashSet<>();
 
     @ManyToOne
     @JsonIgnore
@@ -31,7 +31,7 @@ public class Etudiant implements Serializable {
 
     @ManyToMany(mappedBy = "etudiants")
     @JsonIgnore
-    private Set<Equipe> equipes = new HashSet<>(); // Use Set to ensure uniqueness
+    private Set<Equipe> equipes = new HashSet<>();
 
     // Default constructor
     public Etudiant() {}
@@ -68,15 +68,15 @@ public class Etudiant implements Serializable {
         return nom;
     }
 
-    public void setNomE(String nom) {
+    public void setNom(String nom) {
         this.nom = nom;
     }
 
-    public String getPrenomE() {
+    public String getPrenom() {
         return prenom;
     }
 
-    public void setPrenomE(String prenom) {
+    public void setPrenom(String prenom) {
         this.prenom = prenom;
     }
 
@@ -93,7 +93,7 @@ public class Etudiant implements Serializable {
     }
 
     public void setContrats(Set<Contrat> contrats) {
-        this.contrats = contrats != null ? contrats : new HashSet<>(); // Handle potential null
+        this.contrats = contrats != null ? contrats : new HashSet<>();
     }
 
     public Departement getDepartement() {
@@ -109,6 +109,6 @@ public class Etudiant implements Serializable {
     }
 
     public void setEquipes(Set<Equipe> equipes) {
-        this.equipes = equipes != null ? equipes : new HashSet<>(); // Handle potential null
+        this.equipes = equipes != null ? equipes : new HashSet<>();
     }
 }

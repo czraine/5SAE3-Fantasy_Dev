@@ -15,7 +15,10 @@ import tn.esprit.spring.kaddem.repositories.EquipeRepository;
 import tn.esprit.spring.kaddem.repositories.EtudiantRepository;
 
 import jakarta.transaction.Transactional;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -111,15 +114,15 @@ public class EtudiantServiceImpl implements IEtudiantService {
 	@Override
 	public List<Etudiant> findEtudiantsByNomOrPrenom(String nomOrPrenom) {
 		log.info("Searching students by name or first name: {}", nomOrPrenom);
-		return etudiantRepository.findByNomEContainingOrPrenomEContaining(nomOrPrenom, nomOrPrenom);
+		return etudiantRepository.findByNomContainingOrPrenomContaining(nomOrPrenom, nomOrPrenom);
 	}
 
 	// Nouvelle fonctionnalité: Obtenir les étudiants avec contrat actif
-	@Override
+@Override
 	public List<Etudiant> getEtudiantsWithActiveContrats() {
-		log.info("Retrieving students with active contracts.");
-		return etudiantRepository.findEtudiantsWithActiveContracts();
+		return etudiantRepository.findByContrats_ArchiveFalse(); // Retourne directement la liste
 	}
+
 
 	// Nouvelle fonctionnalité: Vérifier si un étudiant est dans une équipe
 	@Override
