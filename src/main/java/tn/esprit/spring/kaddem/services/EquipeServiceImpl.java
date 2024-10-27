@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import tn.esprit.spring.kaddem.entities.Equipe;
 import tn.esprit.spring.kaddem.entities.Niveau;
 import tn.esprit.spring.kaddem.repositories.EquipeRepository;
+import java.util.stream.Collectors;
 
 import java.util.Date;
 import java.util.List;
