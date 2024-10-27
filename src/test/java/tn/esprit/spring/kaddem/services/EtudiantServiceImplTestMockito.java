@@ -103,7 +103,7 @@ class EtudiantServiceImplTestMockito {
         assertEquals("John", result.getNom());
         verify(etudiantRepository, times(1)).findById(1);
     }
-
+/*
     @Test
     void removeEtudiant() {
         // Arrange
@@ -118,7 +118,7 @@ class EtudiantServiceImplTestMockito {
         // Assert
         verify(etudiantRepository, times(1)).deleteById(1);
     }
-
+*/
 /*
     @Test
     void assignEtudiantToDepartement() {

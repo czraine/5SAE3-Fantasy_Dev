@@ -1,5 +1,6 @@
 package tn.esprit.spring.kaddem.services;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -62,13 +63,10 @@ public class EtudiantServiceImpl implements IEtudiantService {
 	// Supprimer un étudiant
 	@Override
 	public void removeEtudiant(int id) {
-		if (etudiantRepository.findById(id).isPresent()) {
-			etudiantRepository.deleteById(id);
-			System.out.println("Removing student with ID: " + id);
-		} else {
-			System.out.println("Student with ID " + id + " not found.");
-		}
+		Etudiant etudiant = etudiantRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Etudiant not found"));
+		etudiantRepository.delete(etudiant); // Use delete instead of deleteById
 	}
+
 
 	// Assigner un étudiant à un département
 	@Override
