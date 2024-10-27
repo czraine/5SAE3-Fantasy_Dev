@@ -12,15 +12,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+
 @Slf4j
 @AllArgsConstructor
 @Service
 public class EquipeServiceImpl implements IEquipeService{
 	EquipeRepository equipeRepository;
 
-
+	///test merge
 	public List<Equipe> retrieveAllEquipes(){
-	return  (List<Equipe>) equipeRepository.findAll();
+		return  (List<Equipe>) equipeRepository.findAll();
 	}
 	public Equipe addEquipe(Equipe e){
 		return (equipeRepository.save(e));
@@ -37,7 +38,7 @@ public class EquipeServiceImpl implements IEquipeService{
 	}
 
 	public Equipe updateEquipe(Equipe e){
-	return (	equipeRepository.save(e));
+		return (	equipeRepository.save(e));
 	}
 
 	public void evoluerEquipes() {
@@ -59,8 +60,27 @@ public class EquipeServiceImpl implements IEquipeService{
 						equipe.setNiveau(Niveau.EXPERT);
 					}
 					equipeRepository.save(equipe);
+
 				}
 			}
 		}
 	}
+	public int getActiveContratsCount(Integer equipeId) {
+		Equipe equipe = retrieveEquipe(equipeId);
+		return (int) equipe.getEtudiants().stream()
+				.flatMap(etudiant -> etudiant.getContrats().stream())
+				.filter(contrat -> !contrat.getArchive())
+				.count();
+	}
+
+	public List<Equipe> retrieveEquipesWithMinEtudiants(int minEtudiants) {
+		List<Equipe> allEquipes = (List<Equipe>) equipeRepository.findAll();
+		return allEquipes.stream()
+				.filter(equipe -> equipe.getEtudiants() != null && equipe.getEtudiants().size() >= minEtudiants)
+				.collect(Collectors.toList());
+	}
+
+
+
+
 }
