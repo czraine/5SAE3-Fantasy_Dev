@@ -39,7 +39,7 @@ ContratRepository contratRepository;
 		Contrat c=retrieveContrat(idContrat);
 		contratRepository.delete(c);
 	}
-
+/*
 
 	public Contrat affectContratToEtudiant(long idContrat, String nomE, String prenomE) {
 		// Fetch the student by name
@@ -75,7 +75,7 @@ ContratRepository contratRepository;
 		// If the student has 5 or more active contracts, do not assign
 		return null; // Return null when the assignment is not made
 	}
-
+*/
 	public 	Integer nbContratsValides(Date startDate, Date endDate){
 		return contratRepository.getnbContratsValides(startDate, endDate);
 	}

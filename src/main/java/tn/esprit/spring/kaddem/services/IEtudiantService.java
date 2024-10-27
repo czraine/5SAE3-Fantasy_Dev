@@ -13,7 +13,9 @@ public interface IEtudiantService {
 
     public Etudiant retrieveEtudiant(Integer  idEtudiant);
 
-    public void removeEtudiant(Integer idEtudiant);
+
+    // Supprimer un étudiant
+    void removeEtudiant(int id);
 
     public void assignEtudiantToDepartement (Integer etudiantId, Integer departementId);
 
@@ -30,4 +32,8 @@ public interface IEtudiantService {
 
     // Nouvelle fonctionnalité: Vérifier si un étudiant est dans une équipe
     boolean isEtudiantInEquipe(Integer etudiantId, Integer equipeId);
+
+    // Nouvelle fonctionnalité: Vérifier si un étudiant est dans u
+
+    // Nouvelle fonctionnalité: Vérifier si un étudiant est dans une
 }

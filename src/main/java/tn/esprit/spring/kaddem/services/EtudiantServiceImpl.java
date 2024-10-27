@@ -16,9 +16,8 @@ import tn.esprit.spring.kaddem.repositories.EtudiantRepository;
 
 import jakarta.transaction.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -46,8 +45,8 @@ public class EtudiantServiceImpl implements IEtudiantService {
 		log.info("Adding a new student: {}", e);
 		return etudiantRepository.save(e);
 	}
-@Override
-	// Mettre à jour un étudiant
+	@Override
+// Mettre à jour un étudiant
 	public Etudiant updateEtudiant(Etudiant e) {
 		log.info("Updating student: {}", e);
 		return etudiantRepository.save(e);
@@ -62,14 +61,12 @@ public class EtudiantServiceImpl implements IEtudiantService {
 
 	// Supprimer un étudiant
 	@Override
-	public void removeEtudiant(Integer idEtudiant) {
-		log.info("Removing student with ID: {}", idEtudiant);
-		Etudiant e = retrieveEtudiant(idEtudiant);
-		if (e != null) {
-			etudiantRepository.delete(e);
-			log.info("Student removed.");
+	public void removeEtudiant(int id) {
+		if (etudiantRepository.findById(id).isPresent()) {
+			etudiantRepository.deleteById(id);
+			System.out.println("Removing student with ID: " + id);
 		} else {
-			log.warn("Student with ID {} not found.", idEtudiant);
+			System.out.println("Student with ID " + id + " not found.");
 		}
 	}
 
@@ -127,9 +124,12 @@ public class EtudiantServiceImpl implements IEtudiantService {
 	// Nouvelle fonctionnalité: Vérifier si un étudiant est dans une équipe
 	@Override
 	public boolean isEtudiantInEquipe(Integer etudiantId, Integer equipeId) {
-		log.info("Checking if student {} is in team {}", etudiantId, equipeId);
-		Etudiant etudiant = etudiantRepository.findById(etudiantId).orElse(null);
-		Equipe equipe = equipeRepository.findById(equipeId).orElse(null);
-		return etudiant != null && equipe != null && equipe.getEtudiants().contains(etudiant);
+		Optional<Etudiant> etudiantOptional = etudiantRepository.findById(etudiantId);
+		if (etudiantOptional.isPresent()) {
+			Etudiant etudiant = etudiantOptional.get();
+			return etudiant.getEquipes().stream().anyMatch(equipe -> equipe.getIdEquipe().equals(equipeId));
+		}
+		return false;
 	}
+
 }

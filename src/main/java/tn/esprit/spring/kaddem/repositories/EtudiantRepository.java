@@ -14,7 +14,7 @@ public interface EtudiantRepository extends CrudRepository<Etudiant, Integer> {
     List<Etudiant> findByContrats_ArchiveFalse();
 
     @Query("Select e From Etudiant e where e.nom = :nomE and e.prenom = :prenomE")
-    Etudiant findByNomAndPrenom(@Param("nomE") String nomE, @Param("prenomE") String prenomE);
+    List<Etudiant> findByNomAndPrenom(@Param("nomE") String nomE, @Param("prenomE") String prenomE);
 
     List<Etudiant> findByNomContainingOrPrenomContaining(String nom, String prenom);
 

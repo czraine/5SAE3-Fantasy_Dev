@@ -53,12 +53,12 @@ public class ContratRestController {
 		public Contrat assignContratToEtudiant (Contrat ce, String nomE, String prenomE){
 		return 	(contratService.affectContratToEtudiant(ce, nomE, prenomE));
 		}*/
-
+/*
 	@PutMapping(value = "/assignContratToEtudiant/{idContrat}/{nomE}/{prenomE}")
 	public Contrat assignContratToEtudiant (Integer idContrat, String nomE, String prenomE){
 	//	Contrat c= contratService.affectContratToEtudiant()
 		return 	(contratService.affectContratToEtudiant(idContrat, nomE, prenomE));
-	}
+	}*/
 
 	//The most common ISO Date Format yyyy-MM-dd — for example, "2000-10-31".
 		@GetMapping(value = "/getnbContratsValides/{startDate}/{endDate}")
