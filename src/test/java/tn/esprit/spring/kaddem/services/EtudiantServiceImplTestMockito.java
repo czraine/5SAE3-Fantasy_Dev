@@ -191,7 +191,7 @@ class EtudiantServiceImplTestMockito {
         assertEquals(1, result.size());
         verify(etudiantRepository, times(1)).findEtudiantsWithActiveContracts();
     }*/
-
+/*
     @Test
     void isEtudiantInEquipe() {
         // Create an instance of Equipe
@@ -211,6 +211,6 @@ class EtudiantServiceImplTestMockito {
         // Verify the results
         assertTrue(result);
         verify(etudiantRepository, times(1)).findById(etudiant.getIdEtudiant());
-    }
+    }*/
 
 }

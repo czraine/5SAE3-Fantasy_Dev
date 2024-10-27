@@ -31,7 +31,6 @@ public interface IEtudiantService {
     List<Etudiant> getEtudiantsWithActiveContrats();
 
     // Nouvelle fonctionnalité: Vérifier si un étudiant est dans une équipe
-    boolean isEtudiantInEquipe(Integer etudiantId, Integer equipeId);
 
     // Nouvelle fonctionnalité: Vérifier si un étudiant est dans u
 

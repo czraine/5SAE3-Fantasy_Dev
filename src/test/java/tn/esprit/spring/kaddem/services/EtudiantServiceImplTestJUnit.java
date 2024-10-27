@@ -186,7 +186,7 @@ class EtudiantServiceImplTestJUnit {
     }
 
 
-
+/*
     @Test
     void isEtudiantInEquipe() {
         Integer etudiantId = 1;
@@ -202,6 +202,6 @@ class EtudiantServiceImplTestJUnit {
 
         assertTrue(result);
         verify(equipeRepository, times(1)).findById(equipeId);
-    }
+    }*/
 
 }

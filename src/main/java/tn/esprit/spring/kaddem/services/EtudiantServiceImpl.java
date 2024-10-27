@@ -120,7 +120,7 @@ public class EtudiantServiceImpl implements IEtudiantService {
 		return etudiantRepository.findByContrats_ArchiveFalse(); // Retourne directement la liste
 	}
 
-
+/*
 	// Nouvelle fonctionnalité: Vérifier si un étudiant est dans une équipe
 	@Override
 	public boolean isEtudiantInEquipe(Integer etudiantId, Integer equipeId) {
@@ -130,6 +130,6 @@ public class EtudiantServiceImpl implements IEtudiantService {
 			return etudiant.getEquipes().stream().anyMatch(equipe -> equipe.getIdEquipe().equals(equipeId));
 		}
 		return false;
-	}
+	}*/
 
 }
