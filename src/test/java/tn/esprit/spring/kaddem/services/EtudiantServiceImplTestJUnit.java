@@ -152,12 +152,12 @@ class EtudiantServiceImplTestJUnit {
     void findEtudiantsByNomOrPrenom() {
         String search = "Test";
         List<Etudiant> etudiants = new ArrayList<>();
-        when(etudiantRepository.findByNomEContainingOrPrenomEContaining(search, search)).thenReturn(etudiants);
+        when(etudiantRepository.findByNomContainingOrPrenomContaining(search, search)).thenReturn(etudiants);
 
         List<Etudiant> result = etudiantService.findEtudiantsByNomOrPrenom(search);
 
         assertEquals(etudiants, result);
-        verify(etudiantRepository, times(1)).findByNomEContainingOrPrenomEContaining(search, search);
+        verify(etudiantRepository, times(1)).findByNomContainingOrPrenomContaining(search, search);
     }
 
     @Test
