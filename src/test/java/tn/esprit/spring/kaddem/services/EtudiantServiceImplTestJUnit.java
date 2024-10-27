@@ -137,16 +137,21 @@ class EtudiantServiceImplTestJUnit {
     }
 
     @Test
-    void getEtudiantsByDepartement() {
+    void testAssignEtudiantToDepartement() {
+        Integer etudiantId = 1;
         Integer departementId = 1;
-        List<Etudiant> etudiants = new ArrayList<>();
-        when(etudiantRepository.findEtudiantsByDepartement_IdDepart(departementId)).thenReturn(etudiants);
+        Etudiant etudiant = new Etudiant();
+        Departement departement = new Departement();
 
-        List<Etudiant> result = etudiantService.getEtudiantsByDepartement(departementId);
+        when(etudiantRepository.findById(etudiantId)).thenReturn(Optional.of(etudiant));
+        when(departementRepository.findById(departementId)).thenReturn(Optional.of(departement));
 
-        assertEquals(etudiants, result);
-        verify(etudiantRepository, times(1)).findEtudiantsByDepartement_IdDepart(departementId);
+        etudiantService.assignEtudiantToDepartement(etudiantId, departementId);
+
+        assertEquals(departement, etudiant.getDepartement()); // Check if the department is set
+        verify(etudiantRepository, times(1)).save(etudiant);
     }
+
 
     @Test
     void findEtudiantsByNomOrPrenom() {
