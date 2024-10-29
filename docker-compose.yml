@@ -13,23 +13,10 @@ services:
     networks:
       - spring-network
 
-  spring-app:
-    image: your_spring_app_image  # Replace with your actual Spring app image name
-    container_name: spring-app
-    ports:
-      - "8089:8089"  # Map the port for the Spring application
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/kaddem?createDatabaseIfNotExist=true
-      SPRING_DATASOURCE_USERNAME: springuser
-      SPRING_DATASOURCE_PASSWORD: springpass
-    depends_on:
-      - mysql
-    networks:
-      - spring-network
 
 volumes:
   mysql_data: {}
 
 networks:
   spring-network:
-    driver: bridge
+    driver: bridge  # Explicitly use bridge networking
