@@ -4,7 +4,8 @@ services:
     networks:
       - spring-network
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     ports:
       - "8096:8096"
 
@@ -17,6 +18,10 @@ services:
       MYSQL_DATABASE: kaddem
       MYSQL_USER: springuser
       MYSQL_PASSWORD: springpass
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 3
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
