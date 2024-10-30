@@ -1,22 +1,30 @@
 services:
+  spring-app:
+    build: .
+    networks:
+      - spring-network
+    depends_on:
+      - mysql
+    ports:
+      - "8096:8096"
+
   mysql:
     image: mysql:8.0
     container_name: mysql
     ports:
       - "3307:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
     environment:
       MYSQL_DATABASE: kaddem
       MYSQL_USER: springuser
       MYSQL_PASSWORD: springpass
+    volumes:
+      - mysql_data:/var/lib/mysql
     networks:
       - spring-network
-
 
 volumes:
   mysql_data: {}
 
 networks:
   spring-network:
-    driver: bridge  # Explicitly use bridge networking
+    driver: bridge
