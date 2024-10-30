@@ -1,19 +1,16 @@
 package tn.esprit.spring.kaddem.services;
 
-import tn.esprit.spring.kaddem.entities.Contrat;
-import tn.esprit.spring.kaddem.entities.Etudiant;
-import tn.esprit.spring.kaddem.repositories.ContratRepository;
-import tn.esprit.spring.kaddem.repositories.EquipeRepository;
-import tn.esprit.spring.kaddem.repositories.EtudiantRepository;
-import tn.esprit.spring.kaddem.entities.Departement;
-import tn.esprit.spring.kaddem.entities.Equipe;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import tn.esprit.spring.kaddem.entities.*;
+import tn.esprit.spring.kaddem.repositories.ContratRepository;
+import tn.esprit.spring.kaddem.repositories.DepartementRepository;
+import tn.esprit.spring.kaddem.repositories.EquipeRepository;
+import tn.esprit.spring.kaddem.repositories.EtudiantRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,21 +18,26 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-class EtudiantServiceImplTestMockito {
-
+class EquipeServiceImplMockito {
     @Mock
     private EtudiantRepository etudiantRepository;
 
-    @InjectMocks
-    private EtudiantServiceImpl etudiantService;
-
     @Mock
     private ContratRepository contratRepository;
+
     @Mock
     private EquipeRepository equipeRepository;
+
+    @Mock
+    private DepartementRepository departementRepository;
+
+    @InjectMocks
+    private EtudiantServiceImpl etudiantService;
 
     private Etudiant etudiant;
 
@@ -45,6 +47,7 @@ class EtudiantServiceImplTestMockito {
         etudiant.setIdEtudiant(1);
         etudiant.setNom("John");
         etudiant.setPrenom("Doe");
+        etudiant.setOption(Option.GAMIX);
     }
 
     @Test
@@ -56,18 +59,32 @@ class EtudiantServiceImplTestMockito {
         List<Etudiant> result = etudiantService.retrieveAllEtudiants();
 
         assertEquals(1, result.size());
+        assertEquals("John", result.get(0).getNom());
+        assertEquals(Option.GAMIX, result.get(0).getOption());
         verify(etudiantRepository, times(1)).findAll();
     }
 
     @Test
     void addEtudiant() {
-        when(etudiantRepository.save(any(Etudiant.class))).thenReturn(etudiant);
+        // Arrange
+        Etudiant etudiantToAdd = new Etudiant("John", "Doe", Option.GAMIX);
+        Integer departementId = 1; // Mock department ID
+        Departement departement = new Departement();
+        departement.setIdDepart(departementId);
+        when(departementRepository.findById(departementId)).thenReturn(Optional.of(departement));
+        when(etudiantRepository.save(etudiantToAdd)).thenReturn(etudiantToAdd);
 
-        Etudiant result = etudiantService.addEtudiant(etudiant);
+        // Act
+        Etudiant result = etudiantService.addEtudiant(etudiantToAdd, departementId);
 
+        // Assert
         assertNotNull(result);
-        assertEquals("John", result.getNom());
-        verify(etudiantRepository, times(1)).save(etudiant);
+        assertEquals(etudiantToAdd.getNom(), result.getNom());
+        assertEquals(etudiantToAdd.getPrenom(), result.getPrenom());
+        assertEquals(Option.GAMIX, result.getOption());
+        assertEquals(departement, result.getDepartement());
+        verify(departementRepository, times(1)).findById(departementId);
+        verify(etudiantRepository, times(1)).save(etudiantToAdd);
     }
 
     @Test
@@ -77,8 +94,12 @@ class EtudiantServiceImplTestMockito {
         etudiant.setIdEtudiant(1);
         etudiant.setNom("John");
         etudiant.setPrenom("Doe");
+        // Set other properties as needed
 
-        // Mocking the save method
+        // Mocking the findById method to return an Optional containing the etudiant
+        when(etudiantRepository.findById(1)).thenReturn(Optional.of(etudiant));
+
+        // Mocking the save method to return the updated etudiant
         when(etudiantRepository.save(any(Etudiant.class))).thenReturn(etudiant);
 
         // When
@@ -89,7 +110,8 @@ class EtudiantServiceImplTestMockito {
         assertEquals("John", result.getNom());
         assertEquals("Doe", result.getPrenom());
         assertEquals(1, result.getIdEtudiant());
-        verify(etudiantRepository, times(1)).save(etudiant);
+        verify(etudiantRepository, times(1)).findById(1); // Verify findById was called
+        verify(etudiantRepository, times(1)).save(etudiant); // Verify save was called
     }
 
 
@@ -101,116 +123,79 @@ class EtudiantServiceImplTestMockito {
 
         assertNotNull(result);
         assertEquals("John", result.getNom());
+        assertEquals(Option.GAMIX, result.getOption());
         verify(etudiantRepository, times(1)).findById(1);
     }
-/*
+
     @Test
     void removeEtudiant() {
-        // Arrange
-        Etudiant etudiant = new Etudiant();
-        etudiant.setIdEtudiant(1);
         when(etudiantRepository.findById(1)).thenReturn(Optional.of(etudiant));
-        doNothing().when(etudiantRepository).deleteById(anyInt());
+        doNothing().when(etudiantRepository).delete(any(Etudiant.class));
 
-        // Act
         etudiantService.removeEtudiant(1);
 
-        // Assert
-        verify(etudiantRepository, times(1)).deleteById(1);
+        verify(etudiantRepository, times(1)).delete(etudiant);
     }
-*/
-/*
+
     @Test
     void assignEtudiantToDepartement() {
+        Integer departementId = 1;
         Departement departement = new Departement();
-        departement.setIdDepart(1);
-        when(etudiantRepository.findById(anyInt())).thenReturn(Optional.of(etudiant));
+        departement.setIdDepart(departementId);
 
-        etudiantService.assignEtudiantToDepartement(etudiant.getIdEtudiant(), departement.getIdDepart());
+        when(etudiantRepository.findById(anyInt())).thenReturn(Optional.of(etudiant));
+        when(departementRepository.findById(departementId)).thenReturn(Optional.of(departement));
+
+        etudiantService.assignEtudiantToDepartement(etudiant.getIdEtudiant(), departementId);
 
         assertEquals(departement, etudiant.getDepartement());
         verify(etudiantRepository, times(1)).save(etudiant);
-    }*/
+    }
 
-/*
     @Test
     void addAndAssignEtudiantToEquipeAndContract() {
-        // Create an Equipe and Contrat for the test
         Equipe equipe = new Equipe();
         equipe.setIdEquipe(1);
 
         Contrat contrat = new Contrat();
-        contrat.setIdContrat(1L); // Assuming Contrat has an ID
+        contrat.setIdContrat(1L);
 
-        // Mock the repository behavior
-        when(contratRepository.findById(1L)).thenReturn(java.util.Optional.of(contrat));
-        when(equipeRepository.findById(1)).thenReturn(java.util.Optional.of(equipe));
+        when(contratRepository.findById(1L)).thenReturn(Optional.of(contrat));
+        when(equipeRepository.findById(1)).thenReturn(Optional.of(equipe));
         when(etudiantRepository.save(any(Etudiant.class))).thenReturn(etudiant);
 
-        // Call the service method (make sure to provide the correct idContrat and idEquipe)
-        etudiantService.addAndAssignEtudiantToEquipeAndContract(etudiant, 1L, 1);
+        Etudiant result = etudiantService.addAndAssignEtudiantToEquipeAndContract(etudiant, 1L, 1);
 
-        // Verify that the save method was called on the repository
-        verify(etudiantRepository, times(1)).save(etudiant);
-        // Verify that the contract's student is set
+        assertNotNull(result);
         assertEquals(etudiant, contrat.getEtudiant());
-        // Verify that the student is added to the equipe
         assertTrue(equipe.getEtudiants().contains(etudiant));
+        verify(etudiantRepository, times(1)).save(etudiant);
     }
-*/
+
     @Test
     void findEtudiantsByNomOrPrenom() {
-        // Create a mock Etudiant object
-        Etudiant etudiant = new Etudiant("John", "Doe");
-
-        // Prepare the list containing the single Etudiant object
         List<Etudiant> etudiants = new ArrayList<>();
         etudiants.add(etudiant);
 
-        // When the repository method is called, return the list of Etudiant objects
         when(etudiantRepository.findByNomContainingOrPrenomContaining("John", "John")).thenReturn(etudiants);
 
-        // Call the service method to retrieve a list of Etudiants
         List<Etudiant> result = etudiantService.findEtudiantsByNomOrPrenom("John");
 
-        // Assert that the returned list size is correct and the content matches
         assertEquals(1, result.size());
-        assertEquals(etudiant, result.get(0)); // Check the actual object if needed
+        assertEquals("John", result.get(0).getNom());
         verify(etudiantRepository, times(1)).findByNomContainingOrPrenomContaining("John", "John");
     }
 
-/*
     @Test
     void getEtudiantsWithActiveContrats() {
         List<Etudiant> etudiants = new ArrayList<>();
         etudiants.add(etudiant);
-        when(etudiantRepository.findEtudiantsWithActiveContracts()).thenReturn(etudiants);
+
+        when(etudiantRepository.findByContrats_ArchiveFalse()).thenReturn(etudiants);
 
         List<Etudiant> result = etudiantService.getEtudiantsWithActiveContrats();
 
         assertEquals(1, result.size());
-        verify(etudiantRepository, times(1)).findEtudiantsWithActiveContracts();
-    }*/
-/*
-    @Test
-    void isEtudiantInEquipe() {
-        // Create an instance of Equipe
-        Equipe equipe = new Equipe();
-        equipe.setIdEquipe(1); // Set an ID for the equipe
-
-        // Create an instance of Etudiant and assign the equipe
-        Etudiant etudiant = new Etudiant("John", "Doe");
-        etudiant.getEquipes().add(equipe); // Add the equipe to the etudiant's equipes
-
-        // Mock the behavior of the repository
-        when(etudiantRepository.findById(etudiant.getIdEtudiant())).thenReturn(Optional.of(etudiant));
-
-        // Call the method under test
-        boolean result = etudiantService.isEtudiantInEquipe(etudiant.getIdEtudiant(), equipe.getIdEquipe());
-
-        // Verify the results
-        assertTrue(result);
-        verify(etudiantRepository, times(1)).findById(etudiant.getIdEtudiant());
-    }*/
-
+        verify(etudiantRepository, times(1)).findByContrats_ArchiveFalse();
+    }
 }

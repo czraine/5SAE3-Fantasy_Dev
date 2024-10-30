@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -34,25 +34,26 @@ public class Etudiant implements Serializable {
     private Set<Equipe> equipes = new HashSet<>();
 
     // Default constructor
-    public Etudiant() {}
+    public Etudiant() {
+        this.contrats = new HashSet<>();
+        this.equipes = new HashSet<>();
+    }
 
-    // Constructor with parameters
+    // Constructors with parameters
     public Etudiant(String nom, String prenom) {
+        this();
         this.nom = nom;
         this.prenom = prenom;
     }
 
     public Etudiant(String nom, String prenom, Option option) {
-        this.nom = nom;
-        this.prenom = prenom;
+        this(nom, prenom);
         this.option = option;
     }
 
     public Etudiant(Integer idEtudiant, String nom, String prenom, Option option) {
+        this(nom, prenom, option);
         this.idEtudiant = idEtudiant;
-        this.nom = nom;
-        this.prenom = prenom;
-        this.option = option;
     }
 
     // Getters and Setters
@@ -110,5 +111,31 @@ public class Etudiant implements Serializable {
 
     public void setEquipes(Set<Equipe> equipes) {
         this.equipes = equipes != null ? equipes : new HashSet<>();
+    }
+
+    // Override equals and hashCode for proper comparison in tests and collections
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Etudiant)) return false;
+        Etudiant etudiant = (Etudiant) o;
+        return Objects.equals(idEtudiant, etudiant.idEtudiant);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idEtudiant);
+    }
+
+    // Override toString for easier debugging
+    @Override
+    public String toString() {
+        return "Etudiant{" +
+                "idEtudiant=" + idEtudiant +
+                ", nom='" + nom + '\'' +
+                ", prenom='" + prenom + '\'' +
+                ", option=" + option +
+                ", departement=" + (departement != null ? departement.getIdDepart() : null) +
+                '}';
     }
 }

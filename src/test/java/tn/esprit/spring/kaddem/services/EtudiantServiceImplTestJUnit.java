@@ -5,10 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import tn.esprit.spring.kaddem.entities.Contrat;
-import tn.esprit.spring.kaddem.entities.Departement;
-import tn.esprit.spring.kaddem.entities.Equipe;
-import tn.esprit.spring.kaddem.entities.Etudiant;
+import tn.esprit.spring.kaddem.entities.*;
 import tn.esprit.spring.kaddem.repositories.ContratRepository;
 import tn.esprit.spring.kaddem.repositories.DepartementRepository;
 import tn.esprit.spring.kaddem.repositories.EquipeRepository;
@@ -55,32 +52,54 @@ class EtudiantServiceImplTestJUnit {
 
     @Test
     void addEtudiant() {
-        Etudiant etudiant = new Etudiant();
+        // Arrange
+        Etudiant etudiant = new Etudiant("John", "Doe", Option.GAMIX);
+        Integer departementId = 1; // Mock department ID
+        Departement departement = new Departement();
+        departement.setIdDepart(departementId);
+        when(departementRepository.findById(departementId)).thenReturn(Optional.of(departement));
         when(etudiantRepository.save(etudiant)).thenReturn(etudiant);
 
-        Etudiant result = etudiantService.addEtudiant(etudiant);
+        // Act
+        Etudiant result = etudiantService.addEtudiant(etudiant, departementId);
 
+        // Assert
         assertNotNull(result);
-        assertEquals(etudiant, result);
+        assertEquals(etudiant.getNom(), result.getNom());
+        assertEquals(etudiant.getPrenom(), result.getPrenom());
+        assertEquals(Option.GAMIX, result.getOption());
+        assertEquals(departement, result.getDepartement());
+        verify(departementRepository, times(1)).findById(departementId);
         verify(etudiantRepository, times(1)).save(etudiant);
     }
+
 
     @Test
     void updateEtudiant() {
-        Etudiant etudiant = new Etudiant();
+        Integer idEtudiant = 1;
+        Departement departement = new Departement();
+        departement.setIdDepart(1); // Assuming ID is 1 for this example
+        Etudiant etudiant = new Etudiant(idEtudiant, "Jane", "Doe", Option.SE);
+        etudiant.setDepartement(departement); // Set the department
+
+        when(etudiantRepository.findById(idEtudiant)).thenReturn(Optional.of(etudiant));
         when(etudiantRepository.save(etudiant)).thenReturn(etudiant);
 
+        // Updating the etudiant
+        etudiant.setNom("Jane Updated");
         Etudiant result = etudiantService.updateEtudiant(etudiant);
 
         assertNotNull(result);
-        assertEquals(etudiant, result);
+        assertEquals("Jane Updated", result.getNom()); // Assert updated name
+        assertEquals(departement, result.getDepartement()); // Assert department is not null
         verify(etudiantRepository, times(1)).save(etudiant);
     }
+
 
     @Test
     void retrieveEtudiant() {
         Integer idEtudiant = 1;
-        Etudiant etudiant = new Etudiant();
+        Etudiant etudiant = new Etudiant(idEtudiant, "John", "Doe", Option.GAMIX);
         when(etudiantRepository.findById(idEtudiant)).thenReturn(Optional.of(etudiant));
 
         Etudiant result = etudiantService.retrieveEtudiant(idEtudiant);
@@ -89,27 +108,24 @@ class EtudiantServiceImplTestJUnit {
         assertEquals(etudiant, result);
         verify(etudiantRepository, times(1)).findById(idEtudiant);
     }
-/*
+
     @Test
     void removeEtudiant() {
-        // Arrange
+        Integer idEtudiant = 1;
         Etudiant etudiant = new Etudiant();
-        etudiant.setIdEtudiant(1);
-        when(etudiantRepository.findById(1)).thenReturn(Optional.of(etudiant));
+        etudiant.setIdEtudiant(idEtudiant);
+        when(etudiantRepository.findById(idEtudiant)).thenReturn(Optional.of(etudiant));
 
-        // Act
-        etudiantService.removeEtudiant(1);
+        etudiantService.removeEtudiant(idEtudiant);
 
-        // Assert
-        verify(etudiantRepository, times(1)).deleteById(1); // Adjust this line
-    }*/
-
+        verify(etudiantRepository, times(1)).delete(etudiant); // Verify the delete method
+    }
 
     @Test
     void assignEtudiantToDepartement() {
         Integer etudiantId = 1;
         Integer departementId = 1;
-        Etudiant etudiant = new Etudiant();
+        Etudiant etudiant = new Etudiant(etudiantId, "John", "Doe", Option.GAMIX);
         Departement departement = new Departement();
 
         when(etudiantRepository.findById(etudiantId)).thenReturn(Optional.of(etudiant));
@@ -141,23 +157,6 @@ class EtudiantServiceImplTestJUnit {
     }
 
     @Test
-    void testAssignEtudiantToDepartement() {
-        Integer etudiantId = 1;
-        Integer departementId = 1;
-        Etudiant etudiant = new Etudiant();
-        Departement departement = new Departement();
-
-        when(etudiantRepository.findById(etudiantId)).thenReturn(Optional.of(etudiant));
-        when(departementRepository.findById(departementId)).thenReturn(Optional.of(departement));
-
-        etudiantService.assignEtudiantToDepartement(etudiantId, departementId);
-
-        assertEquals(departement, etudiant.getDepartement()); // Check if the department is set
-        verify(etudiantRepository, times(1)).save(etudiant);
-    }
-
-
-    @Test
     void findEtudiantsByNomOrPrenom() {
         String search = "Test";
         List<Etudiant> etudiants = new ArrayList<>();
@@ -171,41 +170,15 @@ class EtudiantServiceImplTestJUnit {
 
     @Test
     void testGetEtudiantsWithActiveContrats() {
-        // Prepare mock data
         Etudiant etudiant1 = new Etudiant();
         Etudiant etudiant2 = new Etudiant();
-        List<Etudiant> etudiantsList = new ArrayList<>(); // Create an ArrayList of Etudiants
-        etudiantsList.add(etudiant1);
-        etudiantsList.add(etudiant2);
+        List<Etudiant> etudiantsList = new ArrayList<>(List.of(etudiant1, etudiant2));
 
-        // Simulate repository behavior
-        when(etudiantRepository.findByContrats_ArchiveFalse()).thenReturn(etudiantsList); // Return as ArrayList
+        when(etudiantRepository.findByContrats_ArchiveFalse()).thenReturn(etudiantsList);
 
-        // Call the service method
         List<Etudiant> result = etudiantService.getEtudiantsWithActiveContrats();
 
-        // Validate
         assertEquals(2, result.size(), "Le nombre d'Etudiants avec des contrats actifs devrait être 2.");
-        verify(etudiantRepository).findByContrats_ArchiveFalse(); // Verify that the repository was called
+        verify(etudiantRepository).findByContrats_ArchiveFalse();
     }
-
-
-/*
-    @Test
-    void isEtudiantInEquipe() {
-        Integer etudiantId = 1;
-        Integer equipeId = 1;
-        Etudiant etudiant = new Etudiant();
-        Equipe equipe = new Equipe();
-        equipe.setEtudiants(Set.of(etudiant));  // Use Set.of instead of List.of
-
-        when(etudiantRepository.findById(etudiantId)).thenReturn(Optional.of(etudiant));
-        when(equipeRepository.findById(equipeId)).thenReturn(Optional.of(equipe));
-
-        boolean result = etudiantService.isEtudiantInEquipe(etudiantId, equipeId);
-
-        assertTrue(result);
-        verify(equipeRepository, times(1)).findById(equipeId);
-    }*/
-
 }

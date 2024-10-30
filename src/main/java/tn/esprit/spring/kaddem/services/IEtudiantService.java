@@ -7,7 +7,9 @@ import java.util.List;
 public interface IEtudiantService {
     public List<Etudiant> retrieveAllEtudiants();
 
-    public Etudiant addEtudiant (Etudiant e);
+
+    // Ajouter un étudiant
+    Etudiant addEtudiant(Etudiant e, Integer departementId);
 
     public Etudiant updateEtudiant (Etudiant e);
 
@@ -15,11 +17,16 @@ public interface IEtudiantService {
 
 
     // Supprimer un étudiant
-    void removeEtudiant(int id);
+
+    void removeEtudiant(Integer idEtudiant);
 
     public void assignEtudiantToDepartement (Integer etudiantId, Integer departementId);
 
     public Etudiant addAndAssignEtudiantToEquipeAndContract(Etudiant e, long idContrat, Integer idEquipe);
+
+
+
+    List<Etudiant> getEtudiantsWithActiveContrats();
 
     public 	List<Etudiant> getEtudiantsByDepartement (Integer idDepartement);
 
@@ -27,8 +34,6 @@ public interface IEtudiantService {
     List<Etudiant> findEtudiantsByNomOrPrenom(String nomOrPrenom);
 
     // Nouvelle fonctionnalité: Obtenir les étudiants avec contrat actif
-
-    List<Etudiant> getEtudiantsWithActiveContrats();
 
     // Nouvelle fonctionnalité: Vérifier si un étudiant est dans une équipe
 

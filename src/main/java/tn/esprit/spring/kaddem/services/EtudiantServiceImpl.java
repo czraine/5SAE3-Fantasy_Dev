@@ -42,16 +42,28 @@ public class EtudiantServiceImpl implements IEtudiantService {
 
 	// Ajouter un étudiant
 	@Override
-	public Etudiant addEtudiant(Etudiant e) {
+	public Etudiant addEtudiant(Etudiant e, Integer departementId) {
+		Departement departement = departementRepository.findById(departementId)
+				.orElseThrow(() -> new EntityNotFoundException("Departement not found"));
+		e.setDepartement(departement); // Set the department before saving
 		log.info("Adding a new student: {}", e);
 		return etudiantRepository.save(e);
 	}
+
+
 	@Override
 // Mettre à jour un étudiant
 	public Etudiant updateEtudiant(Etudiant e) {
-		log.info("Updating student: {}", e);
-		return etudiantRepository.save(e);
+		Etudiant existingEtudiant = etudiantRepository.findById(e.getIdEtudiant())
+				.orElseThrow(() -> new EntityNotFoundException("Etudiant not found"));
+		existingEtudiant.setNom(e.getNom());
+		existingEtudiant.setPrenom(e.getPrenom());
+		existingEtudiant.setOption(e.getOption());
+		existingEtudiant.setDepartement(e.getDepartement()); // Update the department if needed
+		log.info("Updating student: {}", existingEtudiant);
+		return etudiantRepository.save(existingEtudiant);
 	}
+
 
 	// Récupérer un étudiant par ID
 	@Override
@@ -62,10 +74,15 @@ public class EtudiantServiceImpl implements IEtudiantService {
 
 	// Supprimer un étudiant
 	@Override
-	public void removeEtudiant(int id) {
-		Etudiant etudiant = etudiantRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Etudiant not found"));
-		etudiantRepository.delete(etudiant); // Use delete instead of deleteById
+	public void removeEtudiant(Integer idEtudiant) {
+		// Add a log statement
+		log.info("Removing student with ID: " + idEtudiant);
+
+		Etudiant etudiant = etudiantRepository.findById(idEtudiant)
+				.orElseThrow(() -> new RuntimeException("Etudiant not found"));
+		etudiantRepository.delete(etudiant);
 	}
+
 
 
 	// Assigner un étudiant à un département
@@ -88,15 +105,29 @@ public class EtudiantServiceImpl implements IEtudiantService {
 	public Etudiant addAndAssignEtudiantToEquipeAndContract(Etudiant e, long idContrat, Integer idEquipe) {
 		Contrat c = contratRepository.findById(idContrat).orElse(null);
 		Equipe eq = equipeRepository.findById(idEquipe).orElse(null);
+
 		if (c != null && eq != null) {
+			// Assigner l'étudiant au contrat
 			c.setEtudiant(e);
+
+			// Ajouter l'étudiant à l'équipe
 			eq.getEtudiants().add(e);
+
+			// Sauvegarder les modifications pour le contrat et l'équipe si nécessaire
+			contratRepository.save(c);
+			equipeRepository.save(eq);
+
 			log.info("Assigned student {} to contract {} and team {}.", e.getIdEtudiant(), idContrat, idEquipe);
 		} else {
 			log.warn("Contract or team not found for assignment.");
 		}
-		return e;
+
+		// Sauvegarder l'étudiant et retourner l'instance sauvegardée
+		return etudiantRepository.save(e);
 	}
+
+
+
 
 	// Obtenir les étudiants d’un département
 	@Override
@@ -113,10 +144,26 @@ public class EtudiantServiceImpl implements IEtudiantService {
 	}
 
 	// Nouvelle fonctionnalité: Obtenir les étudiants avec contrat actif
-@Override
+	@Override
 	public List<Etudiant> getEtudiantsWithActiveContrats() {
-		return etudiantRepository.findByContrats_ArchiveFalse(); // Retourne directement la liste
+		// Log the method call
+		log.info("Retrieving students with active contracts.");
+
+		// Fetch students with active contracts
+		List<Etudiant> etudiantsWithActiveContrats = etudiantRepository.findByContrats_ArchiveFalse();
+
+		// Log the number of students found
+		log.info("Number of students with active contracts: " + etudiantsWithActiveContrats.size());
+
+		// Check if the list is empty and log an appropriate message
+		if (etudiantsWithActiveContrats.isEmpty()) {
+			log.warn("No students with active contracts found.");
+		}
+
+		// Return the list of students
+		return etudiantsWithActiveContrats;
 	}
+
 
 /*
 	// Nouvelle fonctionnalité: Vérifier si un étudiant est dans une équipe

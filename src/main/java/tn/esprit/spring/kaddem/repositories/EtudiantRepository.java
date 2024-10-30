@@ -12,12 +12,11 @@ import java.util.Set;
 public interface EtudiantRepository extends CrudRepository<Etudiant, Integer> {
     List<Etudiant> findEtudiantsByDepartement_IdDepart(Integer idDepart);
     List<Etudiant> findByContrats_ArchiveFalse();
-
+  /*  @Query("SELECT e FROM Etudiant e JOIN e.contrats c WHERE c.active = true")
+    List<Etudiant> findEtudiantsWithActiveContracts();*/
     @Query("Select e From Etudiant e where e.nom = :nomE and e.prenom = :prenomE")
     List<Etudiant> findByNomAndPrenom(@Param("nomE") String nomE, @Param("prenomE") String prenomE);
 
     List<Etudiant> findByNomContainingOrPrenomContaining(String nom, String prenom);
 
-    @Query("SELECT e FROM Etudiant e JOIN e.contrats c WHERE c.archive = false")
-    List<Etudiant> findEtudiantsWithActiveContracts();
 }
