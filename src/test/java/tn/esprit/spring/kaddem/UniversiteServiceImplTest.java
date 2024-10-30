@@ -53,7 +53,7 @@ class UniversiteServiceImplJUnitTest {
         Departement dep1 = new Departement("Informatique");
         Departement dep2 = new Departement("Mathématiques");
 
-        dep1 = departementRepository.save(dep1); // Persisting the departments before associating
+        dep1 = departementRepository.save(dep1);
         dep2 = departementRepository.save(dep2);
 
         universiteServiceImpl.addUniversite(universite);
@@ -71,7 +71,7 @@ class UniversiteServiceImplJUnitTest {
         Departement dep1 = new Departement("Informatique");
         Departement dep2 = new Departement("Mathématiques");
 
-        // Persist the departments before adding them to the university
+
         dep1 = departementRepository.save(dep1);
         dep2 = departementRepository.save(dep2);
 
@@ -89,7 +89,7 @@ class UniversiteServiceImplJUnitTest {
         Departement dep1 = new Departement("Informatique");
         Departement dep2 = new Departement("Mathématiques");
 
-        // Persist departments and associate them
+
         dep1 = departementRepository.save(dep1);
         dep2 = departementRepository.save(dep2);
 
@@ -137,9 +137,9 @@ class UniversiteServiceImplJUnitTest {
         Universite universite = new Universite("Université à Supprimer");
         universite = universiteServiceImpl.addUniversite(universite);
 
-        universiteServiceImpl.deleteUniversite(universite.getIdUniv());
+        Integer universiteId = universite.getIdUniv();
+        universiteServiceImpl.deleteUniversite(universiteId);
 
-        Universite finalUniversite = universite;
-        assertThrows(NoSuchElementException.class, () -> universiteServiceImpl.retrieveUniversite(finalUniversite.getIdUniv()));
+        assertThrows(NoSuchElementException.class, () -> universiteServiceImpl.retrieveUniversite(universiteId));
     }
 }

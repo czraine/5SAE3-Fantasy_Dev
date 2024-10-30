@@ -16,16 +16,16 @@
     <properties>
         <java.version>17</java.version>
         <passay.version>1.0</passay.version>
-        <sonar.token>squ_41e31dc84d16cc99e9f3aaef8447ff1a57c7cd05</sonar.token>
-        <sonar.host.url>http://192.168.50.4:9000</sonar.host.url>
+            <sonar.token>squ_41e31dc84d16cc99e9f3aaef8447ff1a57c7cd05</sonar.token>
+            <sonar.host.url>http://192.168.50.4:9000</sonar.host.url>
     </properties>
-
     <!-- Deploy to Nexus -->
     <distributionManagement>
         <repository>
             <id>deploymentRepo</id>
             <name>Nexus Repository</name>
-            <url>http://localhost:8081/repository/maven-releases/</url>
+
+        <url>http://localhost:8081/repository/maven-releases/</url>
         </repository>
         <snapshotRepository>
             <id>snapshotRepo</id>
@@ -85,39 +85,34 @@
 
     <build>
         <plugins>
-            <!-- Spring Boot Plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-            <!-- JaCoCo Plugin for Code Coverage -->
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.7</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>report</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>0.8.7</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>report</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
 
-            <!-- SonarQube Maven Plugin with Explicit Version -->
-            <plugin>
-                <groupId>org.sonarsource.scanner.maven</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-                <version>4.0.0.4121</version> <!-- Explicit version to avoid warnings -->
-            </plugin>
+
         </plugins>
     </build>
+
+
 </project>

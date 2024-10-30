@@ -1,6 +1,5 @@
 package tn.esprit.spring.kaddem.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.spring.kaddem.entities.Departement;
@@ -12,19 +11,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class UniversiteServiceImpl implements IUniversiteService {
 
-    @Autowired
-    UniversiteRepository universiteRepository;
+    private static final String UNIVERSITE_NOT_FOUND = "Universite not found";
 
-    @Autowired
-    DepartementRepository departementRepository;
+    private final UniversiteRepository universiteRepository;
+    private final DepartementRepository departementRepository;
 
-    public UniversiteServiceImpl() {
-        // TODO Auto-generated constructor stub
+    public UniversiteServiceImpl(UniversiteRepository universiteRepository, DepartementRepository departementRepository) {
+        this.universiteRepository = universiteRepository;
+        this.departementRepository = departementRepository;
     }
 
     @Override
@@ -45,7 +44,7 @@ public class UniversiteServiceImpl implements IUniversiteService {
     @Override
     public Universite retrieveUniversite(Integer idUniversite) {
         return universiteRepository.findById(idUniversite)
-                .orElseThrow(() -> new NoSuchElementException("Aucune université trouvée avec l'ID " + idUniversite));
+                .orElseThrow(() -> new NoSuchElementException(UNIVERSITE_NOT_FOUND + " with ID " + idUniversite));
     }
 
     @Override
@@ -56,15 +55,15 @@ public class UniversiteServiceImpl implements IUniversiteService {
 
     @Override
     public void assignUniversiteToDepartement(Integer idUniversite, Integer idDepartement) {
-        Universite u = universiteRepository.findById(idUniversite).orElse(null);
-        Departement d = departementRepository.findById(idDepartement).orElse(null);
+        Universite u = universiteRepository.findById(idUniversite).orElseThrow(() -> new NoSuchElementException(UNIVERSITE_NOT_FOUND));
+        Departement d = departementRepository.findById(idDepartement).orElseThrow(() -> new NoSuchElementException("Departement not found"));
         u.getDepartements().add(d);
         universiteRepository.save(u);
     }
 
     @Override
     public Set<Departement> retrieveDepartementsByUniversite(Integer idUniversite) {
-        Universite u = universiteRepository.findById(idUniversite).orElse(null);
+        Universite u = universiteRepository.findById(idUniversite).orElseThrow(() -> new NoSuchElementException(UNIVERSITE_NOT_FOUND));
         return u.getDepartements();
     }
 
@@ -72,34 +71,33 @@ public class UniversiteServiceImpl implements IUniversiteService {
     @Transactional
     public int countDepartementsInUniversite(Integer idUniversite) {
         Universite universite = universiteRepository.findById(idUniversite)
-                .orElseThrow(() -> new NoSuchElementException("Universite not found"));
+                .orElseThrow(() -> new NoSuchElementException(UNIVERSITE_NOT_FOUND));
         return universite.getDepartements().size();
     }
 
-
     @Override
     public List<Universite> searchUniversities(String nomUniv, int minDepartements) {
-        return ((List<Universite>) universiteRepository.findAll())
-                .stream()
+        return StreamSupport.stream(universiteRepository.findAll().spliterator(), false)
                 .filter(u -> u.getNomUniv().contains(nomUniv) && u.getDepartements().size() >= minDepartements)
-                .collect(Collectors.toList());
+                .toList();
+
     }
 
     @Override
     public List<Departement> findDepartementsByCriteria(Integer universiteId, String departementName, int minDepartements) {
         Universite universite = universiteRepository.findById(universiteId)
-                .orElseThrow(() -> new NoSuchElementException("Universite not found"));
+                .orElseThrow(() -> new NoSuchElementException(UNIVERSITE_NOT_FOUND));
 
         return universite.getDepartements().stream()
                 .filter(d -> d.getNomDepart().contains(departementName) && universite.getDepartements().size() >= minDepartements)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     @Transactional
     public void removeDepartementsFromUniversite(Integer universiteId, List<Integer> departementIds) {
         Universite universite = universiteRepository.findById(universiteId)
-                .orElseThrow(() -> new NoSuchElementException("Universite not found"));
+                .orElseThrow(() -> new NoSuchElementException(UNIVERSITE_NOT_FOUND));
 
         Set<Departement> departements = universite.getDepartements();
         departements.removeIf(departement -> departementIds.contains(departement.getIdDepart()));
@@ -109,18 +107,19 @@ public class UniversiteServiceImpl implements IUniversiteService {
     @Override
     @Transactional
     public void addMultipleDepartementsToUniversite(Integer idUniversite, List<Integer> departementIds) {
-        Universite universite = universiteRepository.findById(idUniversite).orElseThrow(() -> new NoSuchElementException("Universite not found"));
+        Universite universite = universiteRepository.findById(idUniversite)
+                .orElseThrow(() -> new NoSuchElementException(UNIVERSITE_NOT_FOUND));
 
         if (universite.getDepartements() == null) {
             universite.setDepartements(new HashSet<>());
         }
 
         departementIds.forEach(departementId -> {
-            Departement departement = departementRepository.findById(departementId).orElseThrow(() -> new NoSuchElementException("Departement not found"));
+            Departement departement = departementRepository.findById(departementId)
+                    .orElseThrow(() -> new NoSuchElementException("Departement not found"));
             universite.getDepartements().add(departement);
         });
 
         universiteRepository.save(universite);
     }
-
 }

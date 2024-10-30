@@ -92,7 +92,7 @@ class UniversiteRestControllerJUnitTest {
                 .andExpect(jsonPath("$[0].nomUniv").value("Université Lyon"));
     }
 
-    // Test pour ajouter plusieurs départements à une université
+
     @Test
     void testAddMultipleDepartementsToUniversite() throws Exception {
         mockMvc.perform(put("/universite/add-departements/{universite-id}", 1)
@@ -103,7 +103,7 @@ class UniversiteRestControllerJUnitTest {
         verify(universiteService, times(1)).addMultipleDepartementsToUniversite(eq(1), anyList());
     }
 
-    // Test pour supprimer plusieurs départements d'une université
+
     @Test
     void testRemoveDepartementsFromUniversite() throws Exception {
         mockMvc.perform(delete("/universite/remove-departements/{universite-id}", 1)
@@ -114,7 +114,7 @@ class UniversiteRestControllerJUnitTest {
         verify(universiteService, times(1)).removeDepartementsFromUniversite(eq(1), anyList());
     }
 
-    // Test pour rechercher des départements par critère (nom de département, nombre min)
+
     @Test
     void testFindDepartementsByCriteria() throws Exception {
         Departement departement1 = new Departement();

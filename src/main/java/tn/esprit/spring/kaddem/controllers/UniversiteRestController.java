@@ -1,7 +1,6 @@
 package tn.esprit.spring.kaddem.controllers;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,27 +16,28 @@ import java.util.Set;
 @AllArgsConstructor
 @RequestMapping("/universite")
 public class UniversiteRestController {
-	@Autowired
-	IUniversiteService universiteService;
+
+	private final IUniversiteService universiteService;
 
 	@GetMapping("/retrieve-all-universites")
-	public List<Universite> getUniversites() {
-		return universiteService.retrieveAllUniversites();
+	public ResponseEntity<List<Universite>> getUniversites() {
+		return ResponseEntity.ok(universiteService.retrieveAllUniversites());
 	}
 
-	@GetMapping("/retrieve-universite/{universite-id}")
-	public Universite retrieveUniversite(@PathVariable("universite-id") Integer universiteId) {
-		return universiteService.retrieveUniversite(universiteId);
+	@GetMapping("/retrieve-universite/{universiteId}")
+	public ResponseEntity<Universite> retrieveUniversite(@PathVariable("universiteId") Integer universiteId) {
+		return ResponseEntity.ok(universiteService.retrieveUniversite(universiteId));
 	}
 
 	@PostMapping("/add-universite")
-	public Universite addUniversite(@RequestBody Universite u) {
-		return universiteService.addUniversite(u);
+	public ResponseEntity<Universite> addUniversite(@RequestBody Universite u) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(universiteService.addUniversite(u));
 	}
 
-	@DeleteMapping("/remove-universite/{universite-id}")
-	public void removeUniversite(@PathVariable("universite-id") Integer universiteId) {
+	@DeleteMapping("/remove-universite/{universiteId}")
+	public ResponseEntity<Void> removeUniversite(@PathVariable("universiteId") Integer universiteId) {
 		universiteService.deleteUniversite(universiteId);
+		return ResponseEntity.noContent().build();
 	}
 
 	@ExceptionHandler(NoSuchElementException.class)
@@ -46,47 +46,56 @@ public class UniversiteRestController {
 	}
 
 	@PutMapping("/update-universite")
-	public Universite updateUniversite(@RequestBody Universite u) {
-		return universiteService.updateUniversite(u);
+	public ResponseEntity<Universite> updateUniversite(@RequestBody Universite u) {
+		return ResponseEntity.ok(universiteService.updateUniversite(u));
 	}
 
 	@PutMapping("/affecter-universite-departement/{universiteId}/{departementId}")
-	public void affecterUniversiteToDepartement(@PathVariable("universiteId") Integer universiteId, @PathVariable("departementId") Integer departementId) {
+	public ResponseEntity<Void> affecterUniversiteToDepartement(
+			@PathVariable Integer universiteId,
+			@PathVariable Integer departementId) {
 		universiteService.assignUniversiteToDepartement(universiteId, departementId);
+		return ResponseEntity.ok().build();
 	}
 
-	@GetMapping("/listerDepartementsUniversite/{idUniversite}")
-	public Set<Departement> listerDepartementsUniversite(@PathVariable("idUniversite") Integer idUniversite) {
-		return universiteService.retrieveDepartementsByUniversite(idUniversite);
+	@GetMapping("/lister-departements-universite/{idUniversite}")
+	public ResponseEntity<Set<Departement>> listerDepartementsUniversite(@PathVariable Integer idUniversite) {
+		return ResponseEntity.ok(universiteService.retrieveDepartementsByUniversite(idUniversite));
 	}
 
-	@GetMapping("/count-departements/{universite-id}")
-	public int countDepartementsInUniversite(@PathVariable("universite-id") Integer universiteId) {
-		return universiteService.countDepartementsInUniversite(universiteId);
+	@GetMapping("/count-departements/{universiteId}")
+	public ResponseEntity<Integer> countDepartementsInUniversite(@PathVariable Integer universiteId) {
+		return ResponseEntity.ok(universiteService.countDepartementsInUniversite(universiteId));
 	}
 
-
-	@GetMapping("/find-departements-criteria/{universite-id}")
-	public List<Departement> findDepartementsByCriteria(@PathVariable("universite-id") Integer universiteId,
-														@RequestParam String departementName,
-														@RequestParam int minDepartements) {
-		return universiteService.findDepartementsByCriteria(universiteId, departementName, minDepartements);
+	@GetMapping("/find-departements-criteria/{universiteId}")
+	public ResponseEntity<List<Departement>> findDepartementsByCriteria(
+			@PathVariable Integer universiteId,
+			@RequestParam String departementName,
+			@RequestParam int minDepartements) {
+		return ResponseEntity.ok(universiteService.findDepartementsByCriteria(universiteId, departementName, minDepartements));
 	}
 
-	@DeleteMapping("/remove-departements/{universite-id}")
-	public void removeDepartementsFromUniversite(@PathVariable("universite-id") Integer universiteId,
-												 @RequestBody List<Integer> departementIds) {
+	@DeleteMapping("/remove-departements/{universiteId}")
+	public ResponseEntity<Void> removeDepartementsFromUniversite(
+			@PathVariable Integer universiteId,
+			@RequestBody List<Integer> departementIds) {
 		universiteService.removeDepartementsFromUniversite(universiteId, departementIds);
+		return ResponseEntity.noContent().build();
 	}
 
-	@PutMapping("/add-departements/{universite-id}")
-	public void addMultipleDepartementsToUniversite(@PathVariable("universite-id") Integer universiteId,
-													@RequestBody List<Integer> departementIds) {
+	@PutMapping("/add-departements/{universiteId}")
+	public ResponseEntity<Void> addMultipleDepartementsToUniversite(
+			@PathVariable Integer universiteId,
+			@RequestBody List<Integer> departementIds) {
 		universiteService.addMultipleDepartementsToUniversite(universiteId, departementIds);
+		return ResponseEntity.ok().build();
 	}
 
 	@GetMapping("/search-universities")
-	public List<Universite> searchUniversities(@RequestParam String nomUniv, @RequestParam int minDepartements) {
-		return universiteService.searchUniversities(nomUniv, minDepartements);
+	public ResponseEntity<List<Universite>> searchUniversities(
+			@RequestParam String nomUniv,
+			@RequestParam int minDepartements) {
+		return ResponseEntity.ok(universiteService.searchUniversities(nomUniv, minDepartements));
 	}
 }
