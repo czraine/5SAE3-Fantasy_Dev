@@ -19,6 +19,19 @@
         <passay.version>1.0</passay.version>
     </properties>
 
+    <distributionManagement>
+        <repository>
+            <id>deploymentRepo</id>
+            <name>Nexus Repository</name>
+            <url>http://localhost:8081/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshotRepo</id>
+            <name>Nexus snapshotRepo</name>
+            <url>http://localhost:8081/repository/kaddem/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
