@@ -1,44 +1,23 @@
-version: '3.8'  # Specify the Docker Compose version if necessary
-
 services:
   mysql:
     image: mysql:8.0
     container_name: mysql
     ports:
-      - "3307:3306"
+      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: rootpass123
+      MYSQL_ROOT_PASSWORD: rootpassword   # Add this line
       MYSQL_DATABASE: kaddem
       MYSQL_USER: springuser
       MYSQL_PASSWORD: springpass
     networks:
       - spring-network
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
-  spring_app:
-    image: springappi:latest
-    container_name: spring_app
-    ports:
-      - "8089:8089"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/kaddem?createDatabaseIfNotExist=true
-      SPRING_DATASOURCE_USERNAME: springuser
-      SPRING_DATASOURCE_PASSWORD: springpass
-    networks:
-      - spring-network
-    depends_on:
-      mysql:
-        condition: service_healthy
 
 volumes:
-  mysql_data:
+  mysql_data: {}
 
 networks:
   spring-network:
-    driver: bridge
+    driver: bridge  # Explicitly use bridge networking
