@@ -30,9 +30,9 @@ services:
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       retries: 10
-      interval: 5s   # Adjusted to give MySQL more time between checks
+      interval: 10s   # Adjusted to give MySQL more time between checks
       timeout: 10s
-      start_period: 40s  # Increased to give MySQL more time for initial startup
+      start_period: 60s  # Increased to give MySQL more time for initial startup
 
 volumes:
   mysql-data:
