@@ -12,7 +12,7 @@
 
     <groupId>tn.esprit.spring</groupId>
     <artifactId>kaddem</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>kaddem</name>
     <description>kaddem</description>
 
@@ -84,8 +84,8 @@
 
     <distributionManagement>
         <repository>
-            <id>releaseRepo</id>
-            <name>Nexus Release Repository</name>
+            <id>deploymentRepo</id>
+            <name>Nexus Repository</name>
             <url>http://192.168.33.10:8081/repository/maven-releases/</url>
         </repository>
     </distributionManagement>
@@ -113,7 +113,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0</version> <!-- Version stable -->
+                <version>3.0.0-M5</version>
                 <configuration>
                     <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
                     <useModulePath>false</useModulePath>
