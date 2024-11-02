@@ -84,10 +84,15 @@
 
     <distributionManagement>
         <repository>
-            <id>deploymentRepo</id>
-            <name>Nexus Repository</name>
+            <id>releaseRepo</id>
+            <name>Nexus Release Repository</name>
             <url>http://192.168.33.10:8081/repository/maven-releases/</url>
         </repository>
+        <snapshotRepository>
+            <id>snapshotRepo</id>
+            <name>Nexus Snapshot Repository</name>
+            <url>http://192.168.33.10:8081/repository/maven-snapshots/</url>
+        </snapshotRepository>
     </distributionManagement>
 
     <build>
@@ -113,7 +118,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M5</version>
+                <version>3.0.0</version> <!-- Version stable -->
                 <configuration>
                     <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
                     <useModulePath>false</useModulePath>
