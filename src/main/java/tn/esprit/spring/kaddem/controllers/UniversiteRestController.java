@@ -76,13 +76,14 @@ public class UniversiteRestController {
 		return ResponseEntity.ok(universiteService.findDepartementsByCriteria(universiteId, departementName, minDepartements));
 	}
 
-	@DeleteMapping("/remove-departements/{universiteId}")
+	@DeleteMapping("/remove-departements/{universite-id}")
 	public ResponseEntity<Void> removeDepartementsFromUniversite(
-			@PathVariable Integer universiteId,
+			@PathVariable("universite-id") Integer universiteId,
 			@RequestBody List<Integer> departementIds) {
 		universiteService.removeDepartementsFromUniversite(universiteId, departementIds);
 		return ResponseEntity.noContent().build();
 	}
+
 
 	@PutMapping("/add-departements/{universiteId}")
 	public ResponseEntity<Void> addMultipleDepartementsToUniversite(

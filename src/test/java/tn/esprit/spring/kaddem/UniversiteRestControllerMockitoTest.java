@@ -80,11 +80,12 @@ class UniversiteRestControllerMockitoTest {
         mockMvc.perform(post("/universite/add-universite")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(universite)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated()) // Expect 201 Created
                 .andExpect(jsonPath("$.nomUniv").value("Université Mockito Test"));
 
         verify(universiteService, times(1)).addUniversite(any(Universite.class));
     }
+
 
     @Test
     void testUpdateUniversite() throws Exception {
@@ -104,10 +105,11 @@ class UniversiteRestControllerMockitoTest {
     @Test
     void testDeleteUniversite() throws Exception {
         mockMvc.perform(delete("/universite/remove-universite/{universite-id}", 1))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
         verify(universiteService, times(1)).deleteUniversite(1);
     }
+
 
     @Test
     void testFindDepartementsByCriteria() throws Exception {
@@ -157,8 +159,9 @@ class UniversiteRestControllerMockitoTest {
         mockMvc.perform(delete("/universite/remove-departements/{universite-id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(Arrays.asList(1, 2))))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
         verify(universiteService, times(1)).removeDepartementsFromUniversite(eq(1), anyList());
     }
+
 }

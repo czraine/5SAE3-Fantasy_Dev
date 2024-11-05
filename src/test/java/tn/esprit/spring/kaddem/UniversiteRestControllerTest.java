@@ -41,18 +41,19 @@ class UniversiteRestControllerJUnitTest {
     @Test
     void testAddUniversite() throws Exception {
         Universite universite = new Universite();
-        universite.setNomUniv("Université JUnit Test");
+        universite.setNomUniv("Université Mockito Test");
 
         when(universiteService.addUniversite(any(Universite.class))).thenReturn(universite);
 
         mockMvc.perform(post("/universite/add-universite")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(universite)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.nomUniv").value("Université JUnit Test"));
+                .andExpect(status().isCreated())  // Expect 201 status
+                .andExpect(jsonPath("$.nomUniv").value("Université Mockito Test"));
 
         verify(universiteService, times(1)).addUniversite(any(Universite.class));
     }
+
 
     @Test
     void testRetrieveAllUniversites() throws Exception {
@@ -109,7 +110,7 @@ class UniversiteRestControllerJUnitTest {
         mockMvc.perform(delete("/universite/remove-departements/{universite-id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(Arrays.asList(1, 2))))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent()); // Expect 204 No Content
 
         verify(universiteService, times(1)).removeDepartementsFromUniversite(eq(1), anyList());
     }
