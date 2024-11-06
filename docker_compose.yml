@@ -37,7 +37,7 @@ services:
 
   prometheus:
     image: prom/prometheus
-    container_name: prometheus_new 
+    container_name: prometheus_new
     ports:
       - "9091:9090"
     volumes:
@@ -50,15 +50,16 @@ services:
 
   grafana:
     image: grafana/grafana
-    container_name: grafana
+    container_name: grafana_new # Utilisez un nom différent
     ports:
       - "3001:3000"
     depends_on:
       - prometheus
     volumes:
-      - grafana_data:/var/lib/grafana # Volume pour persister les données Grafana
+      - grafana_data:/var/lib/grafana
     networks:
       - mynetwork
+
 
 networks:
   mynetwork:
