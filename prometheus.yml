@@ -1,0 +1,18 @@
+global:
+  scrape_interval: 15s # Intervalle de collecte des métriques
+
+scrape_configs:
+  # Configuration pour surveiller Prometheus lui-même
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # Configuration pour surveiller MySQL
+  - job_name: "mysql"
+    static_configs:
+      - targets: ["mysql:3306"]
+
+  # Configuration pour surveiller l'application Spring Boot
+  - job_name: "app"
+    static_configs:
+      - targets: ["app:8096"]

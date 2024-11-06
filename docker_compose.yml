@@ -35,8 +35,34 @@ services:
     networks:
       - mynetwork
 
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9091:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml # Montez le fichier prometheus.yml ici
+    depends_on:
+      - mysql
+      - app
+    networks:
+      - mynetwork
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3001:3000"
+    depends_on:
+      - prometheus
+    volumes:
+      - grafana_data:/var/lib/grafana # Volume pour persister les données Grafana
+    networks:
+      - mynetwork
+
 networks:
   mynetwork:
 
 volumes:
   db_data:
+  grafana_data:
