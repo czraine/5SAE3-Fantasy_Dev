@@ -1,14 +1,18 @@
-# Utiliser une image de base Java
+# Use a minimal Java runtime image for better performance
 FROM openjdk:17-jdk-alpine
 
-# Définir le répertoire de travail
-WORKDIR /app
+# Define environment variables (optional but recommended for readability and maintenance)
+ENV APP_HOME=/app \
+    APP_JAR=kaddem-0.0.1.jar
 
-# Copier le JAR du répertoire target vers l'image Docker
-COPY target/kaddem-0.0.1-SNAPSHOT.jar app.jar
+# Set the working directory
+WORKDIR $APP_HOME
 
-# Exposer le port de l'application
+# Copy the application JAR file from the target directory to the image
+COPY target/$APP_JAR app.jar
+
+# Expose the port used by the Spring Boot application
 EXPOSE 8096
 
-# Commande pour exécuter l'application Spring Boot
+# Use exec form for ENTRYPOINT, and refer to the environment variables
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]

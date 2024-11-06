@@ -19,6 +19,7 @@ tn\esprit\spring\kaddem\entities\Option.class
 tn\esprit\spring\kaddem\repositories\EquipeRepository.class
 tn\esprit\spring\kaddem\entities\Contrat.class
 tn\esprit\spring\kaddem\entities\Specialite.class
+tn\esprit\spring\kaddem\Config\SwaggerConfig.class
 tn\esprit\spring\kaddem\services\EquipeServiceImpl.class
 tn\esprit\spring\kaddem\repositories\UniversiteRepository.class
 tn\esprit\spring\kaddem\services\IContratService.class
