@@ -1,6 +1,7 @@
 version: "3.8"
 
 services:
+  # MySQL Service
   mysql:
     image: mysql:8.0
     container_name: mysql
@@ -9,15 +10,16 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql  # Persistent volume for MySQL data
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}  # Root password for MySQL
-      MYSQL_DATABASE: ${MYSQL_DATABASE}            # Initial database to create
-      MYSQL_USER: ${MYSQL_USER}                    # Application user
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}            # Password for application user
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     networks:
-      - spring-network  # Isolated network for security and configuration
+      - spring-network
 
+  # Prometheus Service
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/kaddem:latest
     container_name: prometheus
     volumes:
       - prometheus_data:/prometheus  # Persistent volume for Prometheus data
@@ -27,15 +29,48 @@ services:
     networks:
       - spring-network
 
+  # Grafana Service
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/kaddem:latest
     container_name: grafana
     ports:
       - "3000:3000"
     volumes:
       - grafana_data:/var/lib/grafana  # Persistent volume for Grafana data
     environment:
-      GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_PASSWORD}  # Set Grafana admin password
+      GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_PASSWORD}
+    networks:
+      - spring-network
+
+  # Nexus Service
+  nexus:
+    image: sonatype/kaddem:latest
+    container_name: nexus
+    ports:
+      - "8081:8081"  # Expose Nexus on port 8081
+    volumes:
+      - nexus_data:/nexus-data  # Persistent volume for Nexus data
+    environment:
+      INSTALL4J_ADD_VM_PARAMS: "-Xms512m -Xmx1024m"
+    networks:
+      - spring-network
+
+  # SonarQube Service
+  sonarqube:
+    image: sonarqube/kaddem:latest
+    container_name: sonarqube
+    ports:
+      - "9000:9000"  # Expose SonarQube on port 9000
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data  # Persistent volume for SonarQube data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+    environment:
+      SONAR_JDBC_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE}
+      SONAR_JDBC_USERNAME: ${MYSQL_USER}
+      SONAR_JDBC_PASSWORD: ${MYSQL_PASSWORD}
+    depends_on:
+      - mysql  # Ensure MySQL is up before starting SonarQube
     networks:
       - spring-network
 
@@ -43,6 +78,10 @@ volumes:
   mysql_data: {}
   prometheus_data: {}
   grafana_data: {}
+  nexus_data: {}  # Persistent volume for Nexus data
+  sonarqube_data: {}  # Persistent volume for SonarQube data
+  sonarqube_extensions: {}
+  sonarqube_logs: {}
 
 networks:
   spring-network:
