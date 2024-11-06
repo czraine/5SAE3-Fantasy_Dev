@@ -19,7 +19,7 @@ services:
 
   # Prometheus Service
   prometheus:
-    image: prom/kaddem:latest
+    image: prom/prometheus:latest  # Updated to official Prometheus image
     container_name: prometheus
     volumes:
       - prometheus_data:/prometheus  # Persistent volume for Prometheus data
@@ -31,7 +31,7 @@ services:
 
   # Grafana Service
   grafana:
-    image: grafana/kaddem:latest
+    image: grafana/grafana:latest  # Updated to official Grafana image
     container_name: grafana
     ports:
       - "3000:3000"
@@ -44,7 +44,7 @@ services:
 
   # Nexus Service
   nexus:
-    image: sonatype/kaddem:latest
+    image: sonatype/nexus3:latest  # Updated to official Nexus image
     container_name: nexus
     ports:
       - "8081:8081"  # Expose Nexus on port 8081
@@ -57,7 +57,7 @@ services:
 
   # SonarQube Service
   sonarqube:
-    image: sonarqube/kaddem:latest
+    image: sonarqube:latest  # Updated to official SonarQube image
     container_name: sonarqube
     ports:
       - "9000:9000"  # Expose SonarQube on port 9000
