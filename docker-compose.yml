@@ -9,10 +9,10 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql  # Persistent volume for MySQL data
     environment:
-      MYSQL_ROOT_PASSWORD: rootpass  # Root password for MySQL
-      MYSQL_DATABASE: mydatabase     # Initial database to create
-      MYSQL_USER: springuser         # Application user
-      MYSQL_PASSWORD: springpass     # Password for application user
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}  # Root password for MySQL
+      MYSQL_DATABASE: ${MYSQL_DATABASE}            # Initial database to create
+      MYSQL_USER: ${MYSQL_USER}                    # Application user
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}            # Password for application user
     networks:
       - spring-network  # Isolated network for security and configuration
 
@@ -35,7 +35,7 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana  # Persistent volume for Grafana data
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=grafana  # Set Grafana admin password
+      GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_PASSWORD}  # Set Grafana admin password
     networks:
       - spring-network
 

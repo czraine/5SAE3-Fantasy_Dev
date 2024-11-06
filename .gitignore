@@ -1,8 +1,9 @@
-HELP.md
-
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+
+# Ignore .env file
+.env
 
 ### STS ###
 .apt_generated
@@ -31,3 +32,15 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Ignore logs and temporary files
+*.log
+*.tmp
+
+# Ignore build directories
+target/
+build/
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
