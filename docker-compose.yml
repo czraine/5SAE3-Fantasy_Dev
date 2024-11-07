@@ -47,7 +47,7 @@ version: '3.8'
 
 services:
   db:
-    image: mysql:8.0.40
+    image: mysql:latest
     container_name: kaddem_mysql
     ports:
       - "3307:3306"
@@ -57,8 +57,8 @@ services:
       timeout: 5s
       retries: 5
     environment:
-      MYSQL_DATABASE: kaddem  # Creates the 'kaddem' database on startup
-      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: kaddemdb # Creates the 'kaddem' database on startup
+      MYSQL_ROOT_PASSWORD: root
     volumes:
       - db_data:/var/lib/mysql
     networks:
@@ -70,13 +70,13 @@ services:
       dockerfile: Dockerfile  # Path to your Dockerfile
     container_name: kaddem_backend
     ports:
-      - "8086:8086"
+      - "8096:8096"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://kaddem_mysql:3306/kaddem
+      SPRING_DATASOURCE_URL: jdbc:mysql://kaddem_mysql:3306/kaddemdb
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
       SERVER_PORT: 8096
-      
+
     volumes:
       - ./src/main/resources/application.properties:/app/src/main/resources/application.properties
     depends_on:
