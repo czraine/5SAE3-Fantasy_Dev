@@ -51,9 +51,8 @@ services:
     container_name: kaddem_mysql
     ports:
       - "3308:3306"
-   
     environment:
-      MYSQL_DATABASE: kaddemdb # Creates the 'kaddem' database on startup
+      MYSQL_DATABASE: kaddemdb  # Creates the 'kaddemdb' database on startup
       MYSQL_ROOT_PASSWORD: root
     volumes:
       - db_data:/var/lib/mysql
@@ -72,12 +71,10 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
       SERVER_PORT: 8096
-
     volumes:
       - ./src/main/resources/application.properties:/app/src/main/resources/application.properties
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     networks:
       - kaddem-network
 
