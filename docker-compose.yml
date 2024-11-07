@@ -51,11 +51,7 @@ services:
     container_name: kaddem_mysql
     ports:
       - "3308:3306"
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "192.168.50.4"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+   
     environment:
       MYSQL_DATABASE: kaddemdb # Creates the 'kaddem' database on startup
       MYSQL_ROOT_PASSWORD: root
