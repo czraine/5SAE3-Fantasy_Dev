@@ -38,11 +38,6 @@ services:
       interval: 10s   # Adjusted to give MySQL more time between checks
       timeout: 10s
       start_period: 60s  # Increased to give MySQL more time for initial startup
-      deploy:
-        resources:
-          limits:
-            memory: 256M
-            cpus: "0.25"
 
 volumes:
   mysql-data:
