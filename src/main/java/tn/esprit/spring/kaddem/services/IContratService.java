@@ -15,7 +15,7 @@ public interface IContratService {
 
     public  void removeContrat(Integer idContrat);
 
-    public Contrat affectContratToEtudiant (long idContrat, String nomE, String prenomE);
+//    public Contrat affectContratToEtudiant (long idContrat, String nomE, String prenomE);
 
         public 	Integer nbContratsValides(Date startDate, Date endDate);
 
