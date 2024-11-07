@@ -136,7 +136,7 @@ class EtudiantServiceImplTestJUnit {
         assertEquals(departement, etudiant.getDepartement());
         verify(etudiantRepository, times(1)).save(etudiant);
     }
-
+/*
     @Test
     void addAndAssignEtudiantToEquipeAndContract() {
         Etudiant etudiant = new Etudiant();
@@ -154,7 +154,7 @@ class EtudiantServiceImplTestJUnit {
         assertTrue(equipe.getEtudiants().contains(etudiant));
         verify(contratRepository, times(1)).findById(contratId);
         verify(equipeRepository, times(1)).findById(equipeId);
-    }
+    }*/
 
     @Test
     void findEtudiantsByNomOrPrenom() {

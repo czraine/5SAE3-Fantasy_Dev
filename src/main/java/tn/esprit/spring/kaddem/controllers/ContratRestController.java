@@ -42,7 +42,7 @@ public class ContratRestController {
 		return contratService.updateContrat(c);
 	}
 
-
+/*
 
 	@PutMapping(value = "/assignContratToEtudiant/{idContrat}/{nomE}/{prenomE}")
 	public Contrat assignContratToEtudiant(
@@ -50,7 +50,7 @@ public class ContratRestController {
 			@PathVariable String nomE,
 			@PathVariable String prenomE) {
 		return contratService.affectContratToEtudiant(idContrat, nomE, prenomE);
-	}
+	}*/
 
 		@GetMapping(value = "/getnbContratsValides/{startDate}/{endDate}")
 		public Integer getnbContratsValides(@PathVariable(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
