@@ -4,29 +4,31 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
-
 @Entity
-public class Departement implements Serializable{
+public class Departement implements Serializable {
+
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idDepart;
+
     private String nomDepart;
-    @OneToMany(mappedBy="departement")
+
+    @OneToMany(mappedBy = "departement")
     @JsonIgnore
-    private Set<Etudiant> etudiants;
+    private Set<Etudiant> etudiants = new HashSet<>(); // Initialize as an empty set
+
     public Departement() {
-        // TODO Auto-generated constructor stub
+        // Default constructor
     }
 
     public Departement(String nomDepart) {
-        super();
         this.nomDepart = nomDepart;
     }
 
     public Departement(Integer idDepart, String nomDepart) {
-        super();
         this.idDepart = idDepart;
         this.nomDepart = nomDepart;
     }
@@ -42,14 +44,16 @@ public class Departement implements Serializable{
     public Integer getIdDepart() {
         return idDepart;
     }
+
     public void setIdDepart(Integer idDepart) {
         this.idDepart = idDepart;
     }
+
     public String getNomDepart() {
         return nomDepart;
     }
+
     public void setNomDepart(String nomDepart) {
         this.nomDepart = nomDepart;
     }
-
 }

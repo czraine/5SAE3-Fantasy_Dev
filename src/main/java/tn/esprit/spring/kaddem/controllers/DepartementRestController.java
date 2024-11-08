@@ -53,4 +53,16 @@ public class DepartementRestController {
 		Departement updatedDepartement = departementService.updateDepartement(departementId, e);
 		return ResponseEntity.ok(updatedDepartement);
 	}
+	@GetMapping("/retrieve-by-name")
+	public ResponseEntity<List<Departement>> retrieveDepartmentsByPartialName(@RequestParam("name") String name) {
+		List<Departement> departments = departementService.retrieveDepartmentsByPartialName(name);
+		return ResponseEntity.ok(departments);
+	}
+	@PutMapping("/affect-etudiant/{etudiantId}/to-departement/{departementId}")
+	public ResponseEntity<Departement> affectEtudiantToDepartement(
+			@PathVariable Integer etudiantId,
+			@PathVariable Integer departementId) {
+		Departement updatedDepartement = departementService.affectEtudiantToDepartement(etudiantId, departementId);
+		return ResponseEntity.ok(updatedDepartement);
+	}
 }

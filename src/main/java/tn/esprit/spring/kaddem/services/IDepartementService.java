@@ -9,4 +9,8 @@ public interface IDepartementService {
     Departement updateDepartement(Integer id, Departement d); // Updated here
     Departement retrieveDepartement(int departementId);
     void deleteDepartement(Integer idDepartement);
+
+    List<Departement> retrieveDepartmentsByPartialName(String namePart);
+    Departement affectEtudiantToDepartement(Integer etudiantId, Integer departementId);
+
 }
