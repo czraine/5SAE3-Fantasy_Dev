@@ -71,8 +71,7 @@ services:
       SONAR_JDBC_PASSWORD: ${MYSQL_PASSWORD}
     depends_on:
       - mysql  # Ensure MySQL is up before starting SonarQube
-    networks:
-      - spring-network
+    network_mode: "host"  # Use host networking to allow external access
 
 volumes:
   mysql_data: {}
@@ -85,4 +84,4 @@ volumes:
 
 networks:
   spring-network:
-    driver: bridge  # Explicitly use bridge networking
+    driver: bridge
