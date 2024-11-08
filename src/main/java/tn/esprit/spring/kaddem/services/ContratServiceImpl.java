@@ -15,7 +15,10 @@ import java.util.*;
 @Slf4j
 @Service
 public class ContratServiceImpl implements IContratService{
-ContratRepository contratRepository;
+	@Autowired
+	ContratRepository contratRepository;
+	@Autowired
+
 	EtudiantRepository etudiantRepository;
 	public List<Contrat> retrieveAllContrats(){
 		return contratRepository.findAll();

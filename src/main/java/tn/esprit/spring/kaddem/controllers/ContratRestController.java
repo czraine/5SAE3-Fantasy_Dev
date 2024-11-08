@@ -1,10 +1,12 @@
 package tn.esprit.spring.kaddem.controllers;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.kaddem.entities.Contrat;
+import tn.esprit.spring.kaddem.services.ContratServiceImpl;
 import tn.esprit.spring.kaddem.services.IContratService;
 
 import java.util.Date;
@@ -14,7 +16,8 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("/contrat")
 public class ContratRestController {
-	IContratService contratService;
+	@Autowired
+	ContratServiceImpl contratService;
 	@GetMapping("/retrieve-all-contrats")
 	public List<Contrat> getContrats() {
 		return contratService.retrieveAllContrats();

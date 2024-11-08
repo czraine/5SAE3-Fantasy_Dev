@@ -1,5 +1,6 @@
 package tn.esprit.spring.kaddem.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
@@ -20,10 +21,17 @@ import java.util.NoSuchElementException;
 @Service
 @Slf4j
 public class EtudiantServiceImpl implements IEtudiantService{
+	@Autowired
 	EtudiantRepository etudiantRepository ;
+	@Autowired
+
 	ContratRepository contratRepository;
+	@Autowired
+
 	EquipeRepository equipeRepository;
-    DepartementRepository departementRepository;
+	@Autowired
+
+	DepartementRepository departementRepository;
 	public List<Etudiant> retrieveAllEtudiants(){
 	return (List<Etudiant>) etudiantRepository.findAll();
 	}
