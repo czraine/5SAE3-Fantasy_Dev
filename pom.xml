@@ -164,16 +164,15 @@
                 </executions>
             </plugin>
                  <plugin>
-      <groupId>io.snyk</groupId>
-      <artifactId>snyk-maven-plugin</artifactId>
-      <version>2.2.0</version>
-      <inherited>false</inherited>
-      <configuration>
-       
-               <org>oussema.mahjoubi@esprit.tn</org>
-       
-      </configuration>
-    </plugin>
+  <groupId>io.snyk</groupId>
+  <artifactId>snyk-maven-plugin</artifactId>
+  <version>2.2.0</version>
+  <configuration>
+    <useWrapper>false</useWrapper>
+    <org>oussema.mahjoubi@esprit.tn</org>
+  </configuration>
+</plugin>
+
         </plugins>
     </build>
 </project>
