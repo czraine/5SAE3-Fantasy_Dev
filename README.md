@@ -1,4 +1,5 @@
 DevOps Project: CI/CD & Monitoring Pipeline
+
 This repository contains the configuration and setup for a complete CI/CD and monitoring pipeline. The project uses a suite of industry-standard DevOps tools to automate the building, testing, analysis, and monitoring of a software application.
 
 The entire environment is provisioned using Vagrant, making it easy to replicate and run locally.
